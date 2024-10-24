@@ -1,2 +1,2 @@
 # BookLeaf - PA
-- This folder includes all resources handed in for each PA, from PA0 to PA5.
+- This folder includes all required resources submitted for each PA, from PA0 to PA5.
