@@ -1,28 +1,39 @@
-# Node modules
+# Node dependencies
 node_modules/
+
+# Build outputs
+build/
+dist/
 
 # Logs
 logs/
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
 # Environment variables
 .env
+*.env
 
-# Production
-build/
-dist/
+# Tailwind CSS cache
+.tailwindcss/
 
-# Miscellaneous
+# OS files
 .DS_Store
 Thumbs.db
 
-# IDE specific files
+# IDE files
 .vscode/
 .idea/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
+*.sublime-project
+*.sublime-workspace
+
+# Coverage reports
+coverage/
+
+# Temporary files
+tmp/
+temp/
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
