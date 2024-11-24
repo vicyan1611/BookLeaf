@@ -1,0 +1,1 @@
+We provide 2 .png files of Controller and Model class diagrams for a better visualization in case the pictures given in the .docx is broken.
