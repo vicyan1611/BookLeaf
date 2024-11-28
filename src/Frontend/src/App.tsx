@@ -1,6 +1,6 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import HelloWorld from './pages/HelloWorld';
-
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import HelloWorld from "./pages/HelloWorld";
+import Books from "./pages/books";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -9,7 +9,11 @@ const router = createBrowserRouter([
   {
     path: "/hello",
     element: <HelloWorld />,
-  }
+  },
+  {
+    path: "/books",
+    element: <Books />,
+  },
 ]);
 
 function App() {

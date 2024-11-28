@@ -1,10 +1,10 @@
-import { useState } from 'react'
-import reactLogo from '../assets/react.svg'
-import viteLogo from '/vite.svg'
-import './HelloWorld.css'
+import { useState } from "react";
+import reactLogo from "../assets/react.svg";
+import viteLogo from "/vite.svg";
+import "./HelloWorld.css";
 
 function HelloWorld() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
     <>
@@ -29,7 +29,7 @@ function HelloWorld() {
         Click on the Vite and React logos to learn more
       </p>
     </>
-  )
+  );
 }
 
-export default HelloWorld
+export default HelloWorld;
