@@ -3,6 +3,7 @@ import "./index.css";
 import { IoSearchOutline } from "react-icons/io5";
 import { LuBookOpen } from "react-icons/lu";
 import { FaCheck } from "react-icons/fa6";
+import conchimxanh from "../../assets/conchimxanh.jpg";
 
 const SearchBar = () => {
   return (
@@ -17,6 +18,40 @@ const SearchBar = () => {
           placeholder="Search for books..."
         />
       </div>
+    </div>
+  );
+};
+
+interface Book {
+  title: string;
+  author: string;
+  pages: number;
+}
+
+interface BookCardProps {
+  book: Book;
+}
+
+const sampleBooks: Book[] = [
+  {
+    title: "Con chim xanh biếc bay về",
+    author: "Nguyễn Nhật Ánh",
+    pages: 200,
+  },
+  {
+    title: "Con chim xanh biếc bay về",
+    author: "Nguyễn Nhật Ánh",
+    pages: 200,
+  },
+];
+
+const BookCard = ({ book }: BookCardProps) => {
+  return (
+    <div className="bg-white p-2 rounded-lg shadow hover:shadow-md transition-shadow flex flex-col">
+      <img src={conchimxanh} alt="" className="scale-75 rounded-lg" />
+      <h3 className="text-lg font-medium text-gray-900">{book.title}</h3>
+      <p className="text-gray-600 h">{book.author}</p>
+      <p className="text-gray-500 text-sm mt-2">{book.pages} pages</p>
     </div>
   );
 };
@@ -106,8 +141,12 @@ function Books() {
           <SideBar />
         </div>
 
-        <div className="bg-green-200 col-start-2 col-span-3">
-          <h1>Books</h1>
+        <div className="col-span-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 auto-rows-fr">
+            {sampleBooks.map((book) => (
+              <BookCard book={book} />
+            ))}
+          </div>
         </div>
       </div>
     </>
