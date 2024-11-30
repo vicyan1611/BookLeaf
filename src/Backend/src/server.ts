@@ -1,6 +1,6 @@
 import express, { Express, Request, Response } from "express";
 require("dotenv").config();
-
+import cors from "cors";
 import { connectMongoDB } from "./config/config";
 import { getAllBooks } from "./controllers/BookController";
 
@@ -9,6 +9,7 @@ const port = process.env.PORT || 3000;
 
 // Middleware to parse JSON bodies
 app.use(express.json());
+app.use(cors());
 
 connectMongoDB();
 

@@ -8,7 +8,6 @@ const BookService: IBookService = {
   getAllBooks: async () => {
     try {
       const books = await Book.find().select("title author totalPages");
-      console.log("Found books:", books);
       return books;
     } catch (error) {
       console.error("Error fetching books:", error);
