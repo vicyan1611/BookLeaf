@@ -1,0 +1,242 @@
+import React, { useState, useRef } from "react";
+import { ReactReader, ReactReaderStyle } from "react-reader";
+import { MdFullscreen } from "react-icons/md";
+import { MdFontDownload } from "react-icons/md";
+import { RxHamburgerMenu } from "react-icons/rx";
+import { LuBookmark } from "react-icons/lu";
+import { IoIosCloseCircleOutline } from "react-icons/io";
+import { IoBookmark } from "react-icons/io5";
+import { toast } from "react-toastify";
+import { MdFullscreenExit } from "react-icons/md";
+import { Rendition, NavItem } from "epubjs";
+import "./index.css";
+
+interface Book {
+	title: string;
+	path: string;
+	author: string;
+	pages: number;
+}
+
+const sampleBook: Book = {
+	title: "Alice in Wonderland",
+	path: "https://react-reader.metabits.no/files/alice.epub",
+	author: "Lewis Carroll",
+	pages: 200,
+};
+
+const style: object = {
+	...ReactReaderStyle,
+	arrow: {
+		...ReactReaderStyle.arrow,
+		color: "black",
+	},
+};
+
+const Reader: React.FC = () => {
+	const [location, setLocation] = useState<string | null>(null);
+    const [fullscreenMode, setFullscreenMode] = useState<boolean>(false);
+	const [page, setPage] = useState<string>("0");
+	const displaySettingRef = useRef<HTMLFormElement>(null);
+    const settingRef = useRef<HTMLDivElement>(null);
+	const renditionRef = useRef<Rendition>(null);
+	const tocRef = useRef<NavItem[]>([]);
+	const [bookmark, setBookmark] = useState<boolean>(false);
+	const locationChanged = (epubcifi: string) => {
+		if (renditionRef.current && tocRef.current) {
+			const { displayed, href } = renditionRef.current.location.start;
+			const chapter = tocRef.current?.find((item) => item.href === href);
+			setPage(
+				`${displayed.page + 1}/${displayed.total} - Chapter: ${
+					chapter?.label ?? "Unknown"
+				}`
+			);
+		}
+		setLocation(epubcifi);
+	};
+	const toggleBookmark = () => {
+		try {
+			setBookmark((bookmark) => !bookmark);
+			if (bookmark) {
+				toast.success("Bookmark removed successfully");
+			} else {
+				toast.success("Bookmark added successfully");
+			}
+		} catch (err) {
+			if (bookmark) {
+				toast.error("Error removing bookmark, Error: " + err);
+			} else {
+				toast.error("Error adding bookmark, Error: " + err);
+			}
+		}
+	};
+    const toggleSettings = () => {
+        if (displaySettingRef.current) {
+            displaySettingRef.current.classList.toggle("hidden");
+        }
+    }
+    const toggleOtherIcons = () => {
+        if (settingRef.current) {
+            const hamburgerIcon = settingRef.current.querySelector(".hamburgerIcon");
+            if (hamburgerIcon) {
+				hamburgerIcon.classList.toggle("rotate-90");
+            }
+            const childSettingIcon = settingRef.current.querySelectorAll(".childSettingIcon");
+            if (childSettingIcon) {
+                childSettingIcon.forEach((icon) => {
+                    icon.classList.toggle("hidden");
+                });
+            }
+            if(displaySettingRef.current && !displaySettingRef.current.classList.contains("hidden")) {
+                displaySettingRef.current.classList.add("hidden");
+            }
+        }
+    }
+    const fullscreen = () => {
+        try{
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            } else if (document.documentElement.webkitRequestFullscreen) {
+                document.documentElement.webkitRequestFullscreen(); // Safari
+            }
+            else if (document.documentElement.msRequestFullscreen) {
+                document.documentElement.msRequestFullscreen(); // IE11
+            }
+            setFullscreenMode(true);
+        }
+        catch(err) {
+            toast.error("Error entering fullscreen mode, Error: " + err);
+            console.error(err);
+        }
+    }
+    const closeFullscreen = () => {
+        try{
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen(); // Safari
+            }
+            else if (document.msExitFullscreen) {
+                document.msExitFullscreen(); // IE11
+            }
+            setFullscreenMode(false);
+        }
+        catch(err) {
+            toast.error("Error exiting fullscreen mode, Error: " + err);
+            console.error(err);
+        }
+    }
+	return (
+		<>
+			<div className="reader w-screen h-screen flex flex-col">
+				<header className="settingBar w-full h-12 bg-red-700  flex flex-row items-center justify-between relative">
+					<div className="bookTitle ml-4 text-white font-bold font-serif text-xl">
+						{sampleBook.title}
+					</div>
+					<div ref={settingRef} className="settings flex-row flex items-center justify-end w-3/12">
+						{!fullscreenMode ? <MdFullscreen onClick={fullscreen} className="text-white h-8 w-8 cursor-pointer ml-4 mr-4 childSettingIcon"/> : <MdFullscreenExit onClick={closeFullscreen} className="text-white h-8 w-8 cursor-pointer ml-4 mr-4 childSettingIcon"/>}
+						<MdFontDownload onClick={toggleSettings} className="text-white h-8 w-8 cursor-pointer ml-4 mr-4 childSettingIcon" />
+						{!bookmark ? (
+							<LuBookmark
+								onClick={toggleBookmark}
+								className="text-white h-8 w-8 cursor-pointer ml-4 mr-4 childSettingIcon"
+							/>
+						) : (
+							<IoBookmark
+								onClick={toggleBookmark}
+								className="text-white h-8 w-8 cursor-pointer ml-4 mr-4 childSettingIcon"
+							/>
+						)}
+						<RxHamburgerMenu onClick={toggleOtherIcons} className="text-white h-8 w-8 cursor-pointer ml-4 mr-4 hamburgerIcon transform-cpu transition-transform" />
+					</div>
+					<form ref={displaySettingRef} className="displaySetting hidden bg-slate-200 border-2 border-gray-800 w-64 h-80 z-50 absolute right-0 top-12 rounded-md mr-36">
+						<div className="settingHeader flex flex-row justify-between mt-4">
+							<div className="settingTitle ml-2 font-serif font-medium text-lg">
+								Display Option
+							</div>
+							<div className="closeButton mr-2" onClick={toggleSettings}>
+								<IoIosCloseCircleOutline className="h-6 w-6 cursor-pointer" />
+							</div>
+						</div>
+						<div className="separator w-full bg-black"></div>
+						<div className="settingOption flex flex-row w-full h-1/6 justify-between items-center">
+							<div className="optionName ml-2">Dark theme</div>
+							<div className="optionSwitch mr-2">
+								<label className="inline-flex items-center cursor-pointer">
+									<input
+										type="checkbox"
+										value=""
+										className="hidden peer"
+									></input>
+									<div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-sky-500"></div>
+								</label>
+							</div>
+						</div>
+						<div className="settingOption flex flex-row w-full h-1/6 justify-between items-center">
+							<div className="optionName ml-2">Font family</div>
+							<select
+								name="font"
+								id="fontSelect"
+								className="optionSelect bg-gray-300 border border-gray-300 text-gray-900 text-sm rounded-lg focus:"
+							>
+								<option selected value="sourceSerifPro">
+									Source Serif Pro
+								</option>
+								<option value="timesNewRoman">
+									Times New Roman
+								</option>
+								<option value="arial">Arial</option>
+								<option value="playfairDisplay">
+									Playfair Display
+								</option>
+								<option value="typewriter">Typewriter</option>
+							</select>
+						</div>
+						<div className="settingOption flex flex-row w-full h-1/6 justify-between items-center">
+							<div className="optionName ml-2">Font size</div>
+							<select
+								name="font"
+								id="fontSelect"
+								className="optionSelect bg-gray-300 border border-gray-300 text-gray-900 text-sm rounded-lg focus:"
+							>
+								<option selected value="16">
+									16
+								</option>
+								<option value="17">17</option>
+								<option value="18">18</option>
+								<option value="20">20</option>
+								<option value="typewriter">Typewriter</option>
+							</select>
+						</div>
+					</form>
+				</header>
+				<div className="h-screen inline-block w-screen">
+					<ReactReader
+						url={sampleBook.path}
+						location={location}
+						title={sampleBook.title}
+						locationChanged={locationChanged}
+						showToc={true}
+						readerStyles={style}
+						tocChanged={(toc) => {
+							tocRef.current = toc;
+						}}
+						getRendition={(rendition) => {
+							renditionRef.current = rendition;
+						}}
+					></ReactReader>
+				</div>
+				<div className="footer flex items-center justify-between">
+					<div className="pageCounter flex items-center justify-center ml-4">
+						{page}
+					</div>
+					<div className="progressCounter">
+						0%
+					</div>
+				</div>
+			</div>
+		</>
+	);
+};
+
+export default Reader;
