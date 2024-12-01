@@ -133,9 +133,14 @@ const Reader: React.FC = () => {
 			renditionRef.current.themes.fontSize(size + "px");
 		}
 	};
-	const changeFontFamily = (font: string) => {
+	const changeFont = (font: string) => {
 		if (renditionRef.current) {
-			renditionRef.current.themes.font(font);
+			renditionRef.current.themes.register('custom', {
+				p: {
+					'font-family': font,
+				}
+			})
+			renditionRef.current.themes.select('custom');
 		}
 	};
 	const changeFontWeight = (weight: string) => {
@@ -274,20 +279,20 @@ const Reader: React.FC = () => {
 								id="fontSelect"
 								className="optionSelect bg-gray-300 border border-gray-300 text-gray-900 text-sm rounded-lg focus:"
 								onChange={(e) =>
-									changeFontFamily(e.target.value)
+									changeFont(e.target.value)
 								}
 							>
-								<option selected value="sourceSerifPro">
-									Source Serif Pro
+								<option value='"Source Serif 4", serif'>
+									Source Serif 4
 								</option>
-								<option value="timesNewRoman">
+								<option value="Times New Roman">
 									Times New Roman
 								</option>
-								<option value="arial">Arial</option>
-								<option value="playfairDisplay">
+								<option value="Arial">Arial</option>
+								<option value='"Playfair Display", serif'>
 									Playfair Display
 								</option>
-								<option value="typewriter">Typewriter</option>
+								<option value='"Poppins", sans-serif'>Poppins</option>
 							</select>
 						</div>
 						<div className="settingOption flex flex-row w-full h-1/6 justify-between items-center">
