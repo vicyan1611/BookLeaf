@@ -1,9 +1,9 @@
-import bookLeafLogo from "../../assets/react.svg";
+import bookLeafLogo from "/assets/react.svg";
 import "./index.css";
 import { IoSearchOutline } from "react-icons/io5";
 import { LuBookOpen } from "react-icons/lu";
 import { FaCheck } from "react-icons/fa6";
-import conchimxanh from "../../assets/conchimxanh.jpg";
+import { useEffect, useState } from "react";
 
 const SearchBar = () => {
   return (
@@ -22,36 +22,45 @@ const SearchBar = () => {
   );
 };
 
-interface Book {
-  title: string;
-  author: string;
-  pages: number;
-}
-
 interface BookCardProps {
   book: Book;
 }
+interface Book {
+  _id?: string;
+  title: string;
+  author: string;
+  totalPages: number;
+  pathToCover: string;
+}
 
-const sampleBooks: Book[] = [
-  {
-    title: "Con chim xanh biếc bay về",
-    author: "Nguyễn Nhật Ánh",
-    pages: 200,
-  },
-  {
-    title: "Con chim xanh biếc bay về",
-    author: "Nguyễn Nhật Ánh",
-    pages: 200,
-  },
-];
+const fetchBooks = async (): Promise<Book[]> => {
+  try {
+    const response = await fetch("http://localhost:3000/api/books");
+    if (!response.ok) {
+      throw new Error("Failed to fetch books");
+    }
+    const data: [] = await response.json();
+    console.log("Fetched books:", data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching books:", error);
+    return [];
+  }
+};
 
 const BookCard = ({ book }: BookCardProps) => {
   return (
     <div className="bg-white p-2 rounded-lg shadow hover:shadow-md transition-shadow flex flex-col">
-      <img src={conchimxanh} alt="" className="scale-75 rounded-lg" />
+      <div className="h-52 justify-center flex">
+        <img
+          src={book.pathToCover}
+          alt={book.title}
+          className="h-full object-cover rounded-lg"
+        />
+      </div>
       <h3 className="text-lg font-medium text-gray-900">{book.title}</h3>
       <p className="text-gray-600 h">{book.author}</p>
-      <p className="text-gray-500 text-sm mt-2">{book.pages} pages</p>
+      <p className="text-gray-500 text-sm mt-2">{book.totalPages} pages</p>
     </div>
   );
 };
@@ -116,6 +125,21 @@ const SideBar = () => {
 };
 
 function Books() {
+  const [books, setBooks] = useState<Book[]>([]);
+
+  useEffect(() => {
+    const loadBooks = async () => {
+      try {
+        const fetchedBooks = await fetchBooks();
+        setBooks(fetchedBooks);
+      } catch (err) {
+        console.error("Error loading books:", err);
+      }
+    };
+
+    loadBooks();
+  }, []);
+
   return (
     <>
       <div className="flex justify-between mb-6">
@@ -143,9 +167,13 @@ function Books() {
 
         <div className="col-span-3">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 auto-rows-fr">
-            {sampleBooks.map((book) => (
-              <BookCard book={book} />
-            ))}
+            {books && books.length > 0 ? (
+              books.map((book) => <BookCard key={book._id} book={book} />)
+            ) : (
+              <div className="flex justify-center items-center h-48 col-span-3">
+                <p>No books found</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

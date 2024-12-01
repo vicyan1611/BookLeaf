@@ -1,30 +1,30 @@
-// src/index.ts
-import express, { Express, Request, Response } from 'express';
+import express, { Express, Request, Response } from "express";
+require("dotenv").config();
+import cors from "cors";
+import { connectMongoDB } from "./config/config";
+import { getAllBooks } from "./controllers/BookController";
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
 // Middleware to parse JSON bodies
 app.use(express.json());
+app.use(cors());
+
+connectMongoDB();
 
 // Basic GET route
-app.get('/', (req: Request, res: Response) => {
-  res.json({ message: 'Welcome to BookLeaf API' });
+app.get("/", (req: Request, res: Response) => {
+  res.json({ message: "Welcome to BookLeaf API" });
 });
 
 // Health check endpoint
-app.get('/health', (req: Request, res: Response) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+app.get("/health", (req: Request, res: Response) => {
+  res.json({ status: "OK", timestamp: new Date().toISOString() });
 });
 
 // Simple books route
-app.get('/api/books', (req: Request, res: Response) => {
-  const books = [
-    { id: 1, title: 'The Great Gatsby' },
-    { id: 2, title: '1984' },
-  ];
-  res.json(books);
-});
+app.get("/api/books", getAllBooks);
 
 // Start server
 app.listen(port, () => {
