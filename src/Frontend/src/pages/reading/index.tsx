@@ -13,14 +13,15 @@ import "./index.css";
 
 interface Book {
 	title: string;
-	path: string;
+	url: string;
 	author: string;
 	pages: number;
 }
 
 const sampleBook: Book = {
+	// placeholder for might be later uses
 	title: "Alice in Wonderland",
-	path: "https://react-reader.metabits.no/files/alice.epub",
+	url: "https://react-reader.metabits.no/files/alice.epub",
 	author: "Lewis Carroll",
 	pages: 200,
 };
@@ -35,10 +36,10 @@ const style: object = {
 
 const Reader: React.FC = () => {
 	const [location, setLocation] = useState<string | null>(null);
-    const [fullscreenMode, setFullscreenMode] = useState<boolean>(false);
+	const [fullscreenMode, setFullscreenMode] = useState<boolean>(false);
 	const [page, setPage] = useState<string>("0");
-	const displaySettingRef = useRef<HTMLFormElement>(null);
-    const settingRef = useRef<HTMLDivElement>(null);
+	const displaySettingRef = useRef<HTMLDivElement>(null);
+	const settingRef = useRef<HTMLDivElement>(null);
 	const renditionRef = useRef<Rendition>(null);
 	const tocRef = useRef<NavItem[]>([]);
 	const [bookmark, setBookmark] = useState<boolean>(false);
@@ -70,62 +71,83 @@ const Reader: React.FC = () => {
 			}
 		}
 	};
-    const toggleSettings = () => {
-        if (displaySettingRef.current) {
-            displaySettingRef.current.classList.toggle("hidden");
-        }
-    }
-    const toggleOtherIcons = () => {
-        if (settingRef.current) {
-            const hamburgerIcon = settingRef.current.querySelector(".hamburgerIcon");
-            if (hamburgerIcon) {
+	const toggleSettings = () => {
+		if (displaySettingRef.current) {
+			displaySettingRef.current.classList.toggle("hidden");
+		}
+	};
+	const toggleOtherIcons = () => {
+		if (settingRef.current) {
+			const hamburgerIcon =
+				settingRef.current.querySelector(".hamburgerIcon");
+			if (hamburgerIcon) {
 				hamburgerIcon.classList.toggle("rotate-90");
-            }
-            const childSettingIcon = settingRef.current.querySelectorAll(".childSettingIcon");
-            if (childSettingIcon) {
-                childSettingIcon.forEach((icon) => {
-                    icon.classList.toggle("hidden");
-                });
-            }
-            if(displaySettingRef.current && !displaySettingRef.current.classList.contains("hidden")) {
-                displaySettingRef.current.classList.add("hidden");
-            }
-        }
-    }
-    const fullscreen = () => {
-        try{
-            if (document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen();
-            } else if (document.documentElement.webkitRequestFullscreen) {
-                document.documentElement.webkitRequestFullscreen(); // Safari
-            }
-            else if (document.documentElement.msRequestFullscreen) {
-                document.documentElement.msRequestFullscreen(); // IE11
-            }
-            setFullscreenMode(true);
-        }
-        catch(err) {
-            toast.error("Error entering fullscreen mode, Error: " + err);
-            console.error(err);
-        }
-    }
-    const closeFullscreen = () => {
-        try{
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            } else if (document.webkitExitFullscreen) {
-                document.webkitExitFullscreen(); // Safari
-            }
-            else if (document.msExitFullscreen) {
-                document.msExitFullscreen(); // IE11
-            }
-            setFullscreenMode(false);
-        }
-        catch(err) {
-            toast.error("Error exiting fullscreen mode, Error: " + err);
-            console.error(err);
-        }
-    }
+			}
+			const childSettingIcon =
+				settingRef.current.querySelectorAll(".childSettingIcon");
+			if (childSettingIcon) {
+				childSettingIcon.forEach((icon) => {
+					icon.classList.toggle("hidden");
+				});
+			}
+			if (
+				displaySettingRef.current &&
+				!displaySettingRef.current.classList.contains("hidden")
+			) {
+				displaySettingRef.current.classList.add("hidden");
+			}
+		}
+	};
+	const fullscreen = () => {
+		try {
+			if (document.documentElement.requestFullscreen) {
+				document.documentElement.requestFullscreen();
+			} else if (document.documentElement.webkitRequestFullscreen) {
+				document.documentElement.webkitRequestFullscreen(); // Safari
+			} else if (document.documentElement.msRequestFullscreen) {
+				document.documentElement.msRequestFullscreen(); // IE11
+			}
+			setFullscreenMode(true);
+		} catch (err) {
+			toast.error("Error entering fullscreen mode, Error: " + err);
+			console.error(err);
+		}
+	};
+	const closeFullscreen = () => {
+		try {
+			if (document.exitFullscreen) {
+				document.exitFullscreen();
+			} else if (document.webkitExitFullscreen) {
+				document.webkitExitFullscreen(); // Safari
+			} else if (document.msExitFullscreen) {
+				document.msExitFullscreen(); // IE11
+			}
+			setFullscreenMode(false);
+		} catch (err) {
+			toast.error("Error exiting fullscreen mode, Error: " + err);
+			console.error(err);
+		}
+	};
+	const changeFontSize = (size: number) => {
+		if (renditionRef.current) {
+			renditionRef.current.themes.fontSize(size + "px");
+		}
+	};
+	const changeFontFamily = (font: string) => {
+		if (renditionRef.current) {
+			renditionRef.current.themes.font(font);
+		}
+	};
+	const changeFontWeight = (weight: string) => {
+		if (renditionRef.current) {
+			renditionRef.current.themes.register('custom', {
+				p: {
+					'font-weight': weight,
+				}
+			})
+			renditionRef.current.themes.select('custom');
+		}
+	}
 	return (
 		<>
 			<div className="reader w-screen h-screen flex flex-col">
@@ -133,9 +155,25 @@ const Reader: React.FC = () => {
 					<div className="bookTitle ml-4 text-white font-bold font-serif text-xl">
 						{sampleBook.title}
 					</div>
-					<div ref={settingRef} className="settings flex-row flex items-center justify-end w-3/12">
-						{!fullscreenMode ? <MdFullscreen onClick={fullscreen} className="text-white h-8 w-8 cursor-pointer ml-4 mr-4 childSettingIcon"/> : <MdFullscreenExit onClick={closeFullscreen} className="text-white h-8 w-8 cursor-pointer ml-4 mr-4 childSettingIcon"/>}
-						<MdFontDownload onClick={toggleSettings} className="text-white h-8 w-8 cursor-pointer ml-4 mr-4 childSettingIcon" />
+					<div
+						ref={settingRef}
+						className="settings flex-row flex items-center justify-end w-3/12"
+					>
+						{!fullscreenMode ? (
+							<MdFullscreen
+								onClick={fullscreen}
+								className="text-white h-8 w-8 cursor-pointer ml-4 mr-4 childSettingIcon"
+							/>
+						) : (
+							<MdFullscreenExit
+								onClick={closeFullscreen}
+								className="text-white h-8 w-8 cursor-pointer ml-4 mr-4 childSettingIcon"
+							/>
+						)}
+						<MdFontDownload
+							onClick={toggleSettings}
+							className="text-white h-8 w-8 cursor-pointer ml-4 mr-4 childSettingIcon"
+						/>
 						{!bookmark ? (
 							<LuBookmark
 								onClick={toggleBookmark}
@@ -147,14 +185,23 @@ const Reader: React.FC = () => {
 								className="text-white h-8 w-8 cursor-pointer ml-4 mr-4 childSettingIcon"
 							/>
 						)}
-						<RxHamburgerMenu onClick={toggleOtherIcons} className="text-white h-8 w-8 cursor-pointer ml-4 mr-4 hamburgerIcon transform-cpu transition-transform" />
+						<RxHamburgerMenu
+							onClick={toggleOtherIcons}
+							className="text-white h-8 w-8 cursor-pointer ml-4 mr-4 hamburgerIcon transform-cpu transition-transform"
+						/>
 					</div>
-					<form ref={displaySettingRef} className="displaySetting hidden bg-slate-200 border-2 border-gray-800 w-64 h-80 z-50 absolute right-0 top-12 rounded-md mr-36">
+					<div
+						ref={displaySettingRef}
+						className="displaySetting hidden bg-slate-200 border-2 border-gray-800 w-64 h-80 z-50 absolute right-0 top-12 rounded-md mr-36"
+					>
 						<div className="settingHeader flex flex-row justify-between mt-4">
 							<div className="settingTitle ml-2 font-serif font-medium text-lg">
 								Display Option
 							</div>
-							<div className="closeButton mr-2" onClick={toggleSettings}>
+							<div
+								className="closeButton mr-2"
+								onClick={toggleSettings}
+							>
 								<IoIosCloseCircleOutline className="h-6 w-6 cursor-pointer" />
 							</div>
 						</div>
@@ -173,11 +220,14 @@ const Reader: React.FC = () => {
 							</div>
 						</div>
 						<div className="settingOption flex flex-row w-full h-1/6 justify-between items-center">
-							<div className="optionName ml-2">Font family</div>
+							<div className="optionName ml-2">Font</div>
 							<select
 								name="font"
 								id="fontSelect"
 								className="optionSelect bg-gray-300 border border-gray-300 text-gray-900 text-sm rounded-lg focus:"
+								onChange={(e) =>
+									changeFontFamily(e.target.value)
+								}
 							>
 								<option selected value="sourceSerifPro">
 									Source Serif Pro
@@ -198,17 +248,44 @@ const Reader: React.FC = () => {
 								name="font"
 								id="fontSelect"
 								className="optionSelect bg-gray-300 border border-gray-300 text-gray-900 text-sm rounded-lg focus:"
+								onChange={(e) =>
+									changeFontSize(parseInt(e.target.value))
+								}
 							>
+								<option value="12">12</option>
+								<option value="13">13</option>
+								<option value="14">14</option>
+								<option value="15">15</option>
 								<option selected value="16">
 									16
 								</option>
 								<option value="17">17</option>
 								<option value="18">18</option>
 								<option value="20">20</option>
-								<option value="typewriter">Typewriter</option>
 							</select>
 						</div>
-					</form>
+						<div className="settingOption flex flex-row w-full h-1/6 justify-between items-center">
+							<div className="optionName ml-2">Font weight</div>
+							<select
+								name="font"
+								id="fontSelect"
+								className="optionSelect bg-gray-300 border border-gray-300 text-gray-900 text-sm rounded-lg focus:"
+								onChange={(e) =>
+									changeFontWeight(e.target.value)
+								}
+							>
+								<option value="100">Thin</option>
+								<option value="200">Extra Light</option>
+								<option value="300">Light</option>
+								<option selected value="400">Normal</option>
+								<option value="500">Medium</option>
+								<option value="600">Semibold</option>
+								<option value="700">Bold</option>
+								<option value="800">Extrabold</option>
+								<option value="900">Black</option>
+							</select>
+						</div>
+					</div>
 				</header>
 				<div className="h-screen inline-block w-screen">
 					<ReactReader
@@ -230,9 +307,7 @@ const Reader: React.FC = () => {
 					<div className="pageCounter flex items-center justify-center ml-4">
 						{page}
 					</div>
-					<div className="progressCounter">
-						0%
-					</div>
+					<div className="progressCounter">0%</div>
 				</div>
 			</div>
 		</>
