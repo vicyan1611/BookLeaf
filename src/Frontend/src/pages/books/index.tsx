@@ -30,6 +30,7 @@ interface Book {
   title: string;
   author: string;
   totalPages: number;
+  pathToCover: string;
 }
 
 const fetchBooks = async (): Promise<Book[]> => {
@@ -39,6 +40,7 @@ const fetchBooks = async (): Promise<Book[]> => {
       throw new Error("Failed to fetch books");
     }
     const data: [] = await response.json();
+    console.log("Fetched books:", data);
     return data;
   } catch (error) {
     console.error("Error fetching books:", error);
@@ -49,6 +51,13 @@ const fetchBooks = async (): Promise<Book[]> => {
 const BookCard = ({ book }: BookCardProps) => {
   return (
     <div className="bg-white p-2 rounded-lg shadow hover:shadow-md transition-shadow flex flex-col">
+      <div className="h-52 justify-center flex">
+        <img
+          src={book.pathToCover}
+          alt={book.title}
+          className="h-full object-cover rounded-lg"
+        />
+      </div>
       <h3 className="text-lg font-medium text-gray-900">{book.title}</h3>
       <p className="text-gray-600 h">{book.author}</p>
       <p className="text-gray-500 text-sm mt-2">{book.totalPages} pages</p>
