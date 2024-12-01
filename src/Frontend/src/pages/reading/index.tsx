@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { ReactReader, ReactReaderStyle } from "react-reader";
 import { MdFullscreen } from "react-icons/md";
 import { MdFontDownload } from "react-icons/md";
@@ -148,6 +148,54 @@ const Reader: React.FC = () => {
 			renditionRef.current.themes.select('custom');
 		}
 	}
+	const changeLineHeight = (height: string) => {
+		if (renditionRef.current) {
+			renditionRef.current.themes.register('custom', {
+				p: {
+					'line-height': height + 'px',
+				}
+			})
+			renditionRef.current.themes.select('custom');
+		}
+	}
+	const changeTheme = (theme: boolean) => {
+		if(renditionRef.current) {
+			if(theme){ // dark theme
+				renditionRef.current.themes.register('custom', {
+					'*': {
+						'color': 'white',
+						'background': 'black',
+					}
+				})
+			}
+			else{ // light theme
+				renditionRef.current.themes.register('custom', {
+					'*': {
+						'color': 'black',
+						'background': 'white',
+					}
+				})
+			}
+			renditionRef.current.themes.select('custom');
+		}
+	}
+	useEffect(() => {
+		const defaultTheme = localStorage.getItem("theme")
+			? JSON.parse(localStorage.getItem("theme") as string)
+			: {
+				p: {
+					'color': 'black',
+					'background': 'white',
+					'font-family': 'Times New Roman',
+					'font-size': '16px',
+					'line-height': '25px',
+				}
+			};
+		if (renditionRef.current) {
+			renditionRef.current.themes.register('custom', defaultTheme);
+			renditionRef.current.themes.select('custom');
+		}
+	}, []);
 	return (
 		<>
 			<div className="reader w-screen h-screen flex flex-col">
@@ -212,8 +260,8 @@ const Reader: React.FC = () => {
 								<label className="inline-flex items-center cursor-pointer">
 									<input
 										type="checkbox"
-										value=""
 										className="hidden peer"
+										onChange={(e) => changeTheme(e.target.checked)}
 									></input>
 									<div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-sky-500"></div>
 								</label>
@@ -285,11 +333,29 @@ const Reader: React.FC = () => {
 								<option value="900">Black</option>
 							</select>
 						</div>
+						<div className="settingOption flex flex-row w-full h-1/6 justify-between items-center">
+							<div className="optionName ml-2">Line height</div>
+							<select
+								name="font"
+								id="fontSelect"
+								className="optionSelect bg-gray-300 border border-gray-300 text-gray-900 text-sm rounded-lg focus:"
+								onChange={(e) =>
+									changeLineHeight(e.target.value)
+								}
+							>
+								<option value="20">20px</option>
+								<option selected value="25">25px</option>
+								<option value="30">30px</option>
+								<option value="35">35px</option>
+								<option value="40">40px</option>
+								<option value="50">50px</option>
+							</select>
+						</div>
 					</div>
 				</header>
 				<div className="h-screen inline-block w-screen">
 					<ReactReader
-						url={sampleBook.path}
+						url={sampleBook.url}
 						location={location}
 						title={sampleBook.title}
 						locationChanged={locationChanged}
