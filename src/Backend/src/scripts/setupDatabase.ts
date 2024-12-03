@@ -51,7 +51,7 @@ async function setupDatabase() {
 
     // Display inserted books
     console.log("\nInserted books:");
-    insertedBooks.forEach((book) => {
+    insertedBooks.forEach((book: typeof Book.prototype) => {
       console.log(
         `- ${book.title} by ${book.author} (${book.totalPages} pages)`
       );
