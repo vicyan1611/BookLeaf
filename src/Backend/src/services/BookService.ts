@@ -10,6 +10,7 @@ const BookService: IBookService = {
       const books = await Book.find().select(
         "title author totalPages pathToCover"
       );
+      console.log("Fetched books:", books);
       return books;
     } catch (error) {
       console.error("Error fetching books:", error);

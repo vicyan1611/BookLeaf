@@ -1,6 +1,6 @@
 import bookLeafLogo from "/assets/BookLeaf_Logo.svg"; // resize the logo to 20px
 import "./index.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaCog, FaChartPie, FaBook } from "react-icons/fa";
 import { IoPersonCircleOutline } from "react-icons/io5";
 
@@ -29,28 +29,86 @@ const Sidebar = ({ active, setActive }: { active: string; setActive: Function })
   );
 };
 
-const BooksSection = () => (
+interface BookCardProps {
+  book: Book;
+}
+interface Book {
+  _id?: string;
+  title: string;
+  author: string;
+  totalPages: number;
+  pathToCover: string;
+}
+
+const fetchBooks = async (): Promise<Book[]> => {
+  try {
+    const response = await fetch("http://localhost:3000/api/books");
+    if (!response.ok) {
+      throw new Error("Failed to fetch books");
+    }
+    const data: [] = await response.json();
+    console.log("Fetched books:", data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching books:", error);
+    return [];
+  }
+};
+
+const BookCard = ({ book }: BookCardProps) => {
+  return (
+    <div className="bg-white p-2 rounded-lg shadow hover:shadow-md transition-shadow flex flex-col">
+      <div className="h-52 justify-center flex">
+        <img
+          src={book.pathToCover}
+          alt={book.title}
+          className="h-full object-cover rounded-lg"
+        />
+      </div>
+      <h3 className="text-lg font-medium text-gray-900">{book.title}</h3>
+      <p className="text-gray-600 h">{book.author}</p>
+      <p className="text-gray-500 text-sm mt-2">{book.totalPages} pages</p>
+    </div>
+  );
+};
+
+function BooksSection() {
+  const [books, setBooks] = useState<Book[]>([]);
+
+  useEffect(() => {
+    const loadBooks = async () => {
+      try {
+        const fetchedBooks = await fetchBooks();
+        setBooks(fetchedBooks);
+      } catch (err) {
+        console.error("Error loading books:", err);
+      }
+    };
+
+    loadBooks();
+  }, []);
+
+  return (
   <div className="p-6">
     <h2 className="text-lg font-bold mb-4">Currently Reading</h2>
     <div className="grid grid-cols-4 gap-4">
-      {Array(5)
-        .fill(null)
-        .map((_, i) => (
-          <div
-            key={i}
-            className="bg-white p-4 shadow rounded-lg relative hover:bg-gray-50 group"
-          >
-            <div className="absolute inset-0 flex justify-center items-center bg-opacity-0 group-hover:bg-opacity-50 group-hover:bg-black transition">
-              <div className="text-white text-xl font-bold">75% Complete</div>
-            </div>
-            <div className="h-40 bg-gray-200 rounded-lg"></div>
-            <h3 className="text-sm mt-2">Book’s Name</h3>
-            <p className="text-xs text-gray-600">Authors:</p>
+    <div className="col-span-3">
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 auto-rows-fr">
+            {books && books.length > 0 ? (
+              books.map((book) => <BookCard key={book._id} book={book} />)
+            ) : (
+              <div className="flex justify-center items-center h-48 col-span-3">
+                <p>No books found</p>
+              </div>
+            )}
+
           </div>
-        ))}
+        </div>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const AnalysisSection = () => (
   <div className="p-6">
@@ -105,7 +163,7 @@ const UserProfile = () => {
   const [active, setActive] = useState("books");
 
   return ( 
-    <div className="flex h-screen">
+    <div className="flex h-screen mx-auto my-0">
       <Sidebar active={active} setActive={setActive} />
       <div className="flex-grow bg-gray-50">
         <header className="bg-green-100 p-4 flex justify-between items-center">
