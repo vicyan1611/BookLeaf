@@ -7,7 +7,9 @@ interface IBookService {
 const BookService: IBookService = {
   getAllBooks: async () => {
     try {
-      const books = await Book.find().select("title author totalPages");
+      const books = await Book.find().select(
+        "title author totalPages pathToCover"
+      );
       return books;
     } catch (error) {
       console.error("Error fetching books:", error);
