@@ -22,10 +22,10 @@ const router = createBrowserRouter([
 		path: "/books/:id",
 		element: <Reader />,
 	},
-  {
-    path: "/userProfile",
-    element: <UserProfile />,
-  },
+	{
+		path: "/userProfile",
+		element: <UserProfile />,
+	},
 ]);
 
 function App() {
