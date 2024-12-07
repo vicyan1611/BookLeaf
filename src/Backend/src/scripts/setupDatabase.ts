@@ -29,6 +29,17 @@ const sampleBooks = [
     pathToBook: "/storage/books/rungxanu.pdf",
     pathToCover: "/storage/covers/rungxanu.jpg",
   },
+<<<<<<< Updated upstream
+=======
+  {
+    title: "LET'S DRAW AND PAINT BOOK",
+    author: "null",
+    totalPages: 20,
+    description: "LET'S DRAW AND PAINT BOOK",
+    pathToBook: "/storage/books/LET'S DRAW AND PAINT BOOK.pdf",
+    pathToCover: "/storage/covers/LET'S-DRAW-AND-PAINT-BOOK.jpg",
+  },
+>>>>>>> Stashed changes
 ];
 
 async function setupDatabase() {
