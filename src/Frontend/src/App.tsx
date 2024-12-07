@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import HelloWorld from "./pages/HelloWorld";
 import Books from "./pages/books";
 import Reader from "./pages/reading";
+import Login from "./pages/login/index.tsx";
 import { ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const router = createBrowserRouter([
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
 	{
 		path: "/books/:id",
 		element: <Reader />,
+	},
+	{
+		path: "/login",
+		element: <Login />,
 	},
 ]);
 
