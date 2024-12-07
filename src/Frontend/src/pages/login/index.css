@@ -1,0 +1,20 @@
+* {
+    user-select: none;
+}
+
+#root {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+input[type=submit] {
+    background-color: #3B4D41;
+    color: white;
+}
+
+form a {
+    color: #777777;
+}
