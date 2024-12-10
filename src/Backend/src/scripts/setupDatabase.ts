@@ -1,6 +1,7 @@
 // src/scripts/setupDatabase.ts
 import mongoose from "mongoose";
 import { Book } from "../models/Book";
+import {NormalUser} from '../models/NormalUser';
 
 const MONGODB_URI = "mongodb://localhost:27017/bookleaf";
 

@@ -2,6 +2,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import HelloWorld from "./pages/HelloWorld";
 import Books from "./pages/books";
 import Reader from "./pages/reading";
+import LoginPageNormalUser from "./pages/login";
+import LoginPageAdmin from "./pages/admin-login";
 import UserProfile from "./pages/userProfile";
 import { ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -21,6 +23,14 @@ const router = createBrowserRouter([
 	{
 		path: "/books/:id",
 		element: <Reader />,
+	},
+	{
+		path: "/login",
+		element: <LoginPageNormalUser />,
+	},
+	{
+		path: "/admin-login",
+		element: <LoginPageAdmin />,
 	},
 	{
 		path: "/userProfile",
