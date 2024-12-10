@@ -1,4 +1,4 @@
-import bookLeafLogo from "/assets/BookLeaf_Logo.svg"; // resize the logo to 20px
+import bookLeafLogo from "/assets/BookLeaf_Logo_cropped.svg";
 import "./index.css";
 import { useEffect, useState } from "react";
 import { FaCog, FaChartPie, FaBook } from "react-icons/fa";
