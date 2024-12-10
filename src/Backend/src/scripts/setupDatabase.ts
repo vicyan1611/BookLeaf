@@ -1,6 +1,7 @@
 // src/scripts/setupDatabase.ts
 import mongoose from "mongoose";
 import { Book } from "../models/Book";
+import {NormalUser} from '../models/NormalUser';
 
 const MONGODB_URI = "mongodb://localhost:27017/bookleaf";
 
@@ -29,8 +30,6 @@ const sampleBooks = [
     pathToBook: "/storage/books/rungxanu.pdf",
     pathToCover: "/storage/covers/rungxanu.jpg",
   },
-<<<<<<< Updated upstream
-=======
   {
     title: "LET'S DRAW AND PAINT BOOK",
     author: "null",
@@ -39,7 +38,6 @@ const sampleBooks = [
     pathToBook: "/storage/books/LET'S DRAW AND PAINT BOOK.pdf",
     pathToCover: "/storage/covers/LET'S-DRAW-AND-PAINT-BOOK.jpg",
   },
->>>>>>> Stashed changes
 ];
 
 async function setupDatabase() {
