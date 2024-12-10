@@ -20,10 +20,10 @@ interface Book {
 
 const sampleBook: Book = {
 	// placeholder for might be later uses
-	title: "Alice in Wonderland",
-	url: "https://react-reader.metabits.no/files/alice.epub",
-	author: "Lewis Carroll",
-	pages: 200,
+	title: "How to win friends and influence people",
+	url: "../../../storage/books/nhasachmienphi-dac-nhan-tam.epub",
+	author: "Dale Carnegie",
+	pages: 320,
 };
 
 const style: object = {
@@ -165,40 +165,22 @@ const Reader: React.FC = () => {
 	}
 	const changeTheme = (theme: boolean) => {
 		if(renditionRef.current) {
+			const epubTheme = renditionRef.current.themes
 			if(theme){ // dark theme
-				renditionRef.current.themes.register('custom', {
-					'*': {
-						'color': 'white',
-						'background': 'black',
-					}
-				})
+				epubTheme.override('color', '#fff');
+				epubTheme.override('background', '#000');
 			}
 			else{ // light theme
-				renditionRef.current.themes.register('custom', {
-					'*': {
-						'color': 'black',
-						'background': 'white',
-					}
-				})
+				epubTheme.override('color', '#000');
+				epubTheme.override('background', '#fff');
 			}
 			renditionRef.current.themes.select('custom');
 		}
 	}
 	useEffect(() => {
-		const defaultTheme = localStorage.getItem("theme")
-			? JSON.parse(localStorage.getItem("theme") as string)
-			: {
-				p: {
-					'color': 'black',
-					'background': 'white',
-					'font-family': 'Times New Roman',
-					'font-size': '16px',
-					'line-height': '25px',
-				}
-			};
 		if (renditionRef.current) {
-			renditionRef.current.themes.register('custom', defaultTheme);
-			renditionRef.current.themes.select('custom');
+			renditionRef.current.themes.override('color', '#000');
+			renditionRef.current.themes.override('background', '#fff');
 		}
 	}, []);
 	return (
