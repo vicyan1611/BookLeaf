@@ -12,7 +12,7 @@ class LoginPage extends Component {
             
         }
         return (
-            <div className='box-border lg:w-2/5 md:w-4/5 sm:w-full flex flex-col items-center justify-center'>
+            <div className='box-border px-4 lg:w-2/5 md:w-4/5 sm:w-full flex flex-col items-center justify-center'>
                 <AccountPageLogo />
                 <form className='flex flex-col items-center justify-center w-full gap-4 min-w-96 max-w-lg' action='formAction'>
                     <AccountPageInput type='input' placeholder='Username or email' required/>
