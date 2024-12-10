@@ -1,9 +1,8 @@
-import bookLeafLogo from '/assets/BookLeaf_Logo.svg'
-
+import bookLeafLogo from '/assets/BookLeaf_Logo_NoBG.png'
 const AccountPageLogo = () => {
     return (
-        <div className="container flex justify-center">
-            <img src={bookLeafLogo} alt="BookLeaf" />
+        <div className="w-full flex justify-center">
+            <img src={bookLeafLogo} alt="BookLeaf"/>
         </div>
     )
 }
