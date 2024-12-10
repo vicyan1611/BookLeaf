@@ -1,10 +1,10 @@
 import bookLeafLogo from '../../assets/BookLeaf_Logo_cropped.svg'
-const AccountPageLogo = () => {
+const MainPageLogo = () => {
     return (
-        <div className="w-3/4 max-w-xs my-8 flex justify-center">
+        <div className="w-1/2 max-w-xs my-8 flex justify-center">
             <img src={bookLeafLogo} alt="BookLeaf"/>
         </div>
     )
 }
 
-export default AccountPageLogo
+export default MainPageLogo
