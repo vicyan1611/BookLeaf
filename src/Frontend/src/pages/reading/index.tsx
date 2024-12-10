@@ -205,7 +205,10 @@ const Reader: React.FC = () => {
 		<>
 			<div className="reader w-screen h-screen flex flex-col">
 				<header className="settingBar w-full h-12 bg-red-700  flex flex-row items-center justify-between relative">
-					<div className="bookTitle ml-4 text-white font-bold font-serif text-xl">
+					<IoIosCloseCircleOutline className="text-white h-8 w-8 cursor-pointer ml-2 absolute" onClick={() =>{
+						window.location.replace("/books");
+					}}></IoIosCloseCircleOutline>
+					<div className="bookTitle ml-14 text-white font-bold font-serif text-xl select-none">
 						{sampleBook.title}
 					</div>
 					<div
@@ -374,12 +377,12 @@ const Reader: React.FC = () => {
 						}}
 					></ReactReader>
 				</div>
-				<div className="footer flex items-center justify-between">
+				<footer className="footer flex items-center justify-between">
 					<div className="pageCounter flex items-center justify-center ml-4">
 						{page}
 					</div>
 					<div className="progressCounter">0%</div>
-				</div>
+				</footer>
 			</div>
 		</>
 	);
