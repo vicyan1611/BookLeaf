@@ -43,6 +43,7 @@ const Reader: React.FC = () => {
 	const renditionRef = useRef<Rendition>(null);
 	const tocRef = useRef<NavItem[]>([]);
 	const [bookmark, setBookmark] = useState<boolean>(false);
+	const [book, setBook] = useState<Book>(sampleBook);
 	const locationChanged = (epubcifi: string) => {
 		if (renditionRef.current && tocRef.current) {
 			const { displayed, href } = renditionRef.current.location.start;
@@ -183,6 +184,25 @@ const Reader: React.FC = () => {
 			renditionRef.current.themes.override('background', '#fff');
 		}
 	}, []);
+	useEffect(() => {
+		const bookID = window.location.pathname.split("/")[2];
+		fetch('http://localhost:3150/api/books/' + bookID, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application'
+			}
+		}).then(response => {
+			response.json().then(data => {
+				const newBook: Book = {
+					title: data.title,
+					url: data.pathToBook,
+					author: data.author,
+					pages: data.totalPages
+				}
+				setBook(newBook);
+			})
+		})
+	}, [])
 	return (
 		<>
 			<div className="reader w-screen h-screen flex flex-col">
@@ -345,9 +365,9 @@ const Reader: React.FC = () => {
 				</header>
 				<div className="h-screen inline-block w-screen">
 					<ReactReader
-						url={sampleBook.url}
+						url={book.url}
 						location={location}
-						title={sampleBook.title}
+						title={book.title}
 						locationChanged={locationChanged}
 						showToc={true}
 						readerStyles={style}
