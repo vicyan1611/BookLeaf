@@ -26,6 +26,14 @@ app.get("/health", (req: Request, res: Response) => {
 // Simple books route
 app.get("/api/books", getAllBooks);
 
+app.post('/login', (req, res) => {
+  const username = req.body.username || null
+  const password = req.body.password || null
+  if (!username || !password) {
+    res.status(401).send('Invalid username or password')
+  }
+})
+
 // Start server
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
