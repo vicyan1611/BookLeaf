@@ -45,3 +45,6 @@ out/
 
 # repomix
 repomix-output.txt
+
+# wsl file
+*:Zone.Identifier
