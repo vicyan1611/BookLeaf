@@ -5,3 +5,5 @@ class MetadataHandler {
     public adder: MetaAdder = _adder;
     public finder: MetaFinder = _finder;
 }
+
+export const metaHandler = new MetadataHandler()
