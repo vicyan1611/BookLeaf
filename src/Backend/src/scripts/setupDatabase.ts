@@ -1,7 +1,10 @@
-// src/scripts/setupDatabase.ts
-import mongoose from "mongoose";
-import { Book } from "../models/Book";
+import { setupBooks } from './setupBooks'
+import { setupNormalUsers } from './setupNormalUsers'
 
+<<<<<<< HEAD
+setupBooks()
+setupNormalUsers()
+=======
 const MONGODB_URI = "mongodb://localhost:27017/bookleaf";
 
 const sampleBooks = [
@@ -68,3 +71,4 @@ async function setupDatabase() {
 
 // Run the setup
 setupDatabase();
+>>>>>>> main
