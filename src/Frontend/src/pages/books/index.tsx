@@ -49,8 +49,11 @@ const fetchBooks = async (): Promise<Book[]> => {
 };
 
 const BookCard = ({ book }: BookCardProps) => {
+  const read = () => {
+    location.href = `/books/${book._id}`;
+  }
   return (
-    <div className="bg-white p-2 rounded-lg shadow hover:shadow-md transition-shadow flex flex-col">
+    <div className="bg-white p-2 rounded-lg shadow hover:shadow-md transition-shadow flex flex-col cursor-pointer" onClick={read}>
       <div className="h-52 justify-center flex">
         <img
           src={book.pathToCover}

@@ -1,7 +1,9 @@
+import { getBookByID } from './../controllers/BookController';
 import { Book } from "../models/Book";
 
 interface IBookService {
   getAllBooks: () => Promise<any>;
+  getBookByID: (id: string) => Promise<any>;
 }
 
 const BookService: IBookService = {
@@ -16,6 +18,16 @@ const BookService: IBookService = {
       throw error;
     }
   },
+  getBookByID: async (id: string) => {
+    try {
+      const book = await Book.findById(id);
+      return book;
+    }
+    catch (error) {
+      console.error("Error fetching book:", error);
+      throw error;
+    }
+  }
 };
 
 export default BookService;
