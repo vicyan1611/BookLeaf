@@ -2,6 +2,8 @@ import { Book } from  '../Book';
 import { NormalUser } from '../NormalUser';
 import { usertype } from '../User';
 
+import Bcrypt from "bcrypt"
+
 export class MetaAdder {
     private static instance: any = null
     public constructor() {
@@ -9,7 +11,7 @@ export class MetaAdder {
         else return MetaAdder.instance
     }
     private addNormalUser(username: string, password: string, email: string, avatarUrl: string) {
-
+        
     }
 
     private addAdmin(username: string, password: string, email: string, avatarUrl: string) {

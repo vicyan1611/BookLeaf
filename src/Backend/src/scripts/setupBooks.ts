@@ -1,10 +1,7 @@
-import { setupBooks } from './setupBooks'
-import { setupNormalUsers } from './setupNormalUsers'
+// src/scripts/setupDatabase.ts
+import mongoose from "mongoose";
+import { Book } from "../models/Book";
 
-<<<<<<< HEAD
-setupBooks()
-setupNormalUsers()
-=======
 const MONGODB_URI = "mongodb://localhost:27017/bookleaf";
 
 const sampleBooks = [
@@ -32,9 +29,17 @@ const sampleBooks = [
     pathToBook: "/storage/books/rungxanu.pdf",
     pathToCover: "/storage/covers/rungxanu.jpg",
   },
+  {
+    title: "LET'S DRAW AND PAINT BOOK",
+    author: "null",
+    totalPages: 20,
+    description: "LET'S DRAW AND PAINT BOOK",
+    pathToBook: "/storage/books/LET'S DRAW AND PAINT BOOK.pdf",
+    pathToCover: "/storage/covers/LET'S-DRAW-AND-PAINT-BOOK.jpg",
+  },
 ];
 
-async function setupDatabase() {
+export async function setupBooks() {
   try {
     // Connect to MongoDB
     await mongoose.connect(MONGODB_URI);
@@ -54,7 +59,7 @@ async function setupDatabase() {
 
     // Display inserted books
     console.log("\nInserted books:");
-    insertedBooks.forEach((book: typeof Book.prototype) => {
+    insertedBooks.forEach((book) => {
       console.log(
         `- ${book.title} by ${book.author} (${book.totalPages} pages)`
       );
@@ -68,7 +73,3 @@ async function setupDatabase() {
     process.exit(1);
   }
 }
-
-// Run the setup
-setupDatabase();
->>>>>>> main
