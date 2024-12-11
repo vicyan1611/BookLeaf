@@ -2,14 +2,16 @@ import { Book } from  '../Book';
 import { NormalUser } from '../NormalUser';
 import { usertype } from '../User';
 
-import Bcrypt from "bcrypt"
-
 export class MetaAdder {
-    private static instance: any = null
-    public constructor() {
-        if (MetaAdder.instance === null) return new MetaAdder();
-        else return MetaAdder.instance
+    static #instance: MetaAdder;
+
+    public static get instance(): MetaAdder {
+        if (!MetaAdder.#instance) MetaAdder.#instance = new MetaAdder();
+        return MetaAdder.#instance;
     }
+
+    private constructor() {}
+
     private addNormalUser(username: string, password: string, email: string, avatarUrl: string) {
         
     }
@@ -43,4 +45,4 @@ export class MetaAdder {
     }
 }
 
-export const adder = new MetaAdder()
+export const adder: MetaAdder = MetaAdder.instance

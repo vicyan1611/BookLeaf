@@ -3,62 +3,65 @@ import { NormalUser } from '../NormalUser';
 import { usertype } from '../User';
 
 export class MetaFinder {
-    private static instance: any = null
-    public constructor() {
-        if (MetaFinder.instance === null) return new MetaFinder();
-        else return MetaFinder.instance
+  static #instance: MetaFinder;
+
+  public static get instance(): MetaFinder {
+      if (!MetaFinder.#instance) MetaFinder.#instance = new MetaFinder();
+      return MetaFinder.#instance;
+  }
+
+  private constructor() {}
+  
+  public async findNormalUser(criteria: any, projection: any) {
+    criteria = criteria as typeof criteria & {
+      username: string,
+      password: string,
+      email: string
     }
-    private async findNormalUser(criteria: any) {
-      criteria = criteria as typeof criteria & {
-        username: string,
-        password: string
-      }
-      if (criteria.username && criteria.password) {
-        try {
-          const res = await NormalUser.find({username: criteria.username, password: criteria.password})
-          switch (res.length) {
-            case 0:
-              return null
-            case 1:
-              return true
-            default:
-              throw new Error('Database Error: more than 1 user found')
-          }
-        } catch (err) {
-          console.error(err)
-        }
-      }
-      return false
+    if (!criteria.username) delete criteria.username
+    if (!criteria.password) delete criteria.password
+    if (!criteria.email) delete criteria.email
+    if (Object.keys(criteria).length === 0) return null
+    const res = await NormalUser.find(criteria, projection)
+    console.log(res)
+    switch (res.length) {
+      case 0:
+        return null
+      case 1:
+        return res[0]
+      default:
+        throw new Error('Database Error: more than 1 user found')
     }
+  }
 
-    private findAdmin(criteria: Object) {
+  public findAdmin(criteria: Object) {
 
-    }
+  }
 
-    public findAllTagsByUser(username: string) {
+  public findAllTagsByUser(username: string) {
 
-    }
+  }
 
-    public findAllBooksByUser(username: string) {
+  public findAllBooksByUser(username: string) {
 
-    }
+  }
 
-    public findBookByUser(username: string, bookId: number) {
+  public findBookByUser(username: string, bookId: number) {
 
-    }
+  }
 
-    public findAllNotesByBook(username: string, bookId: number) {
+  public findAllNotesByBook(username: string, bookId: number) {
 
-    }
+  }
 
-    public findAllBookmarksByBook(username: string, bookId: number) {
+  public findAllBookmarksByBook(username: string, bookId: number) {
 
-    }
+  }
 
-    public findAllAnnotationsByBook(username: string, bookId: number) {
-      this.findAllNotesByBook(username, bookId);
-      this.findAllBookmarksByBook(username, bookId);
-    }
+  public findAllAnnotationsByBook(username: string, bookId: number) {
+    this.findAllNotesByBook(username, bookId);
+    this.findAllBookmarksByBook(username, bookId);
+  }
 }
 
-export const finder = new MetaFinder()
+export const finder = MetaFinder.instance;

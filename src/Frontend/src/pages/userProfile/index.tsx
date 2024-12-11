@@ -1,6 +1,7 @@
 import bookLeafLogo from "../../assets/BookLeaf_Logo_cropped.svg"; // resize the logo to 20px
 import "./index.css";
 import { useEffect, useState } from "react";
+import { Link } from 'react-router-dom';
 import { FaCog, FaChartPie, FaBook } from "react-icons/fa";
 import { IoPersonCircleOutline } from "react-icons/io5";
 
@@ -153,7 +154,9 @@ const AccountManagementSection = () => (
   <div className="p-6">
     <h2 className="text-lg font-bold mb-4">Account Management</h2>
     <div className="bg-white p-4 shadow rounded-lg">
-      <button className="block w-full text-left text-red-600">Logout</button>
+      <Link to="/" className="block w-full text-left text-red-600">
+              Logout
+      </Link>
       <button className="block w-full text-left mt-2">Change Password</button>
     </div>
   </div>
@@ -174,10 +177,10 @@ const UserProfile = () => {
               <p className="text-sm text-gray-600">alexarawles@gmail.com</p>
             </div>
           </div>
-          <div className="flex gap-2">
+{/*       <div className="flex gap-2">
             <button className="bg-green-500 text-white px-4 py-2 rounded">Add Friend</button>
             <button className="bg-red-500 text-white px-4 py-2 rounded">Block</button>
-          </div>
+          </div> */}
         </header>
         <main>
           {active === "books" && <BooksSection />}
@@ -192,31 +195,34 @@ const UserProfile = () => {
 
 const UserProfilePage = () => {
   return (
-  <div className="h-screen flex flex-col">
-    <header className="bg-white shadow-md">
-      <div className="container mx-auto flex justify-between items-center px-4 py-3">
-        <img src={bookLeafLogo} alt="BookLeaf Logo" className="h-6" />
-        <div className="flex gap-3">
-          <button className="font-semibold hover:bg-green-500 hover:text-white py-2 px-3 rounded">
-            Books
-          </button>
-          <button className="font-semibold hover:bg-green-500 hover:text-white py-2 px-3 rounded">
-            My Libraries
-          </button>
-          <button className="font-semibold hover:bg-green-500 hover:text-white py-2 px-3 rounded">
-            Goals
-          </button>
-          <button className="font-semibold hover:bg-green-500 hover:text-white py-2 px-3 rounded">
-            Friends
-          </button>
-        </div>
+    <div className="w-[1420px] mx-auto">
+      <div className="flex flex-col h-full">
+        <header className="bg-white shadow-md">
+          <div className="flex justify-between items-center p-4">
+            <img src={bookLeafLogo} alt="BookLeaf Logo" className="h-6" />
+            <div className="flex gap-3">
+              <Link to="/books" className="font-semibold hover:bg-green-500 hover:text-white py-2 px-3 rounded">
+                Books
+              </Link>
+              <button className="font-semibold hover:bg-green-500 hover:text-white py-2 px-3 rounded">
+                My Libraries
+              </button>
+              <button className="font-semibold hover:bg-green-500 hover:text-white py-2 px-3 rounded">
+                Goals
+              </button>
+              <button className="font-semibold hover:bg-green-500 hover:text-white py-2 px-3 rounded">
+                Friends
+              </button>
+            </div>
+          </div>
+        </header>
+        <main className="flex-grow overflow-y-auto">
+          <UserProfile />
+        </main>
       </div>
-    </header>
-    <main className="flex-grow">
-      <UserProfile />
-    </main>
-  </div>
+    </div>
   );
 };
+
 
 export default UserProfilePage;
