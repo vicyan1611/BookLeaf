@@ -192,31 +192,34 @@ const UserProfile = () => {
 
 const UserProfilePage = () => {
   return (
-  <div className="h-screen flex flex-col">
-    <header className="bg-white shadow-md">
-      <div className="container mx-auto flex justify-between items-center px-4 py-3">
-        <img src={bookLeafLogo} alt="BookLeaf Logo" className="h-6" />
-        <div className="flex gap-3">
-          <button className="font-semibold hover:bg-green-500 hover:text-white py-2 px-3 rounded">
-            Books
-          </button>
-          <button className="font-semibold hover:bg-green-500 hover:text-white py-2 px-3 rounded">
-            My Libraries
-          </button>
-          <button className="font-semibold hover:bg-green-500 hover:text-white py-2 px-3 rounded">
-            Goals
-          </button>
-          <button className="font-semibold hover:bg-green-500 hover:text-white py-2 px-3 rounded">
-            Friends
-          </button>
-        </div>
+    <div className="w-[1420px] mx-auto">
+      <div className="flex flex-col h-full">
+        <header className="bg-white shadow-md">
+          <div className="flex justify-between items-center p-4">
+            <img src={bookLeafLogo} alt="BookLeaf Logo" className="h-6" />
+            <div className="flex gap-3">
+              <button className="font-semibold hover:bg-green-500 hover:text-white py-2 px-3 rounded">
+                Books
+              </button>
+              <button className="font-semibold hover:bg-green-500 hover:text-white py-2 px-3 rounded">
+                My Libraries
+              </button>
+              <button className="font-semibold hover:bg-green-500 hover:text-white py-2 px-3 rounded">
+                Goals
+              </button>
+              <button className="font-semibold hover:bg-green-500 hover:text-white py-2 px-3 rounded">
+                Friends
+              </button>
+            </div>
+          </div>
+        </header>
+        <main className="flex-grow overflow-y-auto">
+          <UserProfile />
+        </main>
       </div>
-    </header>
-    <main className="flex-grow">
-      <UserProfile />
-    </main>
-  </div>
+    </div>
   );
 };
+
 
 export default UserProfilePage;
