@@ -1,4 +1,4 @@
-import bookLeafLogo from "/assets/react.svg";
+import MainPageLogo from '../../components/LoginPage'
 import "./index.css";
 import { IoSearchOutline } from "react-icons/io5";
 import { LuBookOpen } from "react-icons/lu";
@@ -146,7 +146,7 @@ function Books() {
   return (
     <>
       <div className="flex justify-between mb-6">
-        <img src={bookLeafLogo} alt="" />
+        <img src={MainPageLogo} alt="" />
         <div className="flex gap-3">
           <button className="font-semibold hover:bg-green-500 hover:text-white py-2 px-3 rounded">
             Books
