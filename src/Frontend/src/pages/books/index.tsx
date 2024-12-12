@@ -1,4 +1,4 @@
-import MainPageLogo from '../../components/LoginPage'
+import MainPageLogo from "../../assets/BookLeaf_Logo_cropped.svg";
 import "./index.css";
 import { IoSearchOutline } from "react-icons/io5";
 import { LuBookOpen } from "react-icons/lu";
@@ -51,9 +51,12 @@ const fetchBooks = async (): Promise<Book[]> => {
 const BookCard = ({ book }: BookCardProps) => {
   const read = () => {
     location.href = `/books/${book._id}`;
-  }
+  };
   return (
-    <div className="bg-white p-2 rounded-lg shadow hover:shadow-md transition-shadow flex flex-col cursor-pointer" onClick={read}>
+    <div
+      className="bg-white p-2 rounded-lg shadow hover:shadow-md transition-shadow flex flex-col cursor-pointer"
+      onClick={read}
+    >
       <div className="h-52 justify-center flex">
         <img
           src={book.pathToCover}
@@ -144,8 +147,8 @@ function Books() {
   }, []);
 
   return (
-    <>
-      <div className="flex justify-between mb-6">
+    <div className="w-full p-10 h-full">
+      <div className="flex justify-between mb-6 w-full h-12">
         <img src={MainPageLogo} alt="" />
         <div className="flex gap-3">
           <button className="font-semibold hover:bg-green-500 hover:text-white py-2 px-3 rounded">
@@ -180,7 +183,7 @@ function Books() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
