@@ -20,17 +20,39 @@ interface ResetPasswordData {
 }
 
 interface LoginData {
-	email: string;
+	username: string;
 	password: string;
 }
 
 const AuthorizationController: AuthorizationControllerType = {
-	login: async (req: Request, res: Response) => {
-		// Your login logic here
+	login: async (req: Request<{}, {}, LoginData>, res: Response) => {
+		try{
+			const data = req.body;
+			const user = await NormalUser.findOne({username: data.username}) || await NormalUser.findOne({email: data.username});
+			if (!user) {
+				res.status(404).send("User not found");
+				return;
+			}
+			const match = bcrypt.compareSync(data.password, user.password);
+			if (!match) {
+				res.status(401).send("Wrong credentials");
+				return;
+			}
+			res.status(200).send("User logged in successfully");
+		}
+		catch(error){
+			console.log(error);
+			res.status(500).send("Internal Server Error");
+		}
 	},
 	register: async (req: Request<{}, {}, RegisterData>, res: Response) => {
 		try {
 			const data = req.body;
+			const existed = await NormalUser.findOne({email: data.email}) || await NormalUser.findOne({username: data.username});
+			if (existed) {
+				res.status(409).send("User already exists");
+				return
+			}
             const salt = bcrypt.genSaltSync(saltRounds);
             const hash = bcrypt.hashSync(data.password, salt);
 			const user: INormalUser = new NormalUser({
