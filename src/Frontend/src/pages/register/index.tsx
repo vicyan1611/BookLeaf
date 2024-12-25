@@ -16,7 +16,7 @@ export default function Register(props: any) {
             toast.error('Passwords do not match')
             return
         }
-        fetch('http://localhost:3000/register', {
+        fetch('http://localhost:3000/api/auth/register', {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json"
@@ -25,7 +25,7 @@ export default function Register(props: any) {
         })
         .then(res => {
             if (res.status === 200) {
-                navigate(redirectPath)
+                navigate('/login')
             } else {
                 res.text().then(text => toast.error(text))
             }
@@ -39,18 +39,18 @@ export default function Register(props: any) {
                 onSubmit={handleRegister}
             >
                 <AccountPageInput
-                    name='email' type='email' placeholder='Email' required
+                    name='email' type='email' placeholder='Email'
                 />
                 <AccountPageInput
-                    name='username' type='input' placeholder='Username' required
+                    name='username' type='input' placeholder='Username'
                 />
                 <AccountPageInput
-                    name='password' type='password' placeholder='Password' required
+                    name='password' type='password' placeholder='Password'
                 />
                 <AccountPageInput
-                    name='confirmPassword' type='password' placeholder='Confirm Password' required
+                    name='confirmPassword' type='password' placeholder='Confirm Password'
                 />
-                <AccountPageInput type='submit' value='Log in'/>
+                <AccountPageInput type='submit' value='Register'/>
                 <div className='container flex flex-row items-center justify-center'>
                     <a href="/login">Already have an account? Sign in now!</a>
                 </div>
