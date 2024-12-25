@@ -1,10 +1,25 @@
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import AccountPageLogo from "../../components/AccountPageLogo";
 import AccountPageInput from "../../components/AccountPageInput";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 export default function Register(props: any) {
 	const navigate = useNavigate();
+	useEffect(() => {
+		axios
+			.post(
+				"http://localhost:3000/api/auth/verify",
+				{},
+				{ withCredentials: true }
+			)
+			.then((res: any) => {
+				if (res.status === 200) {
+					navigate('/');
+				}
+			});
+	}, []);
 	async function handleRegister(e: any) {
 		e.preventDefault();
 		const email = e.target.email.value;
@@ -16,12 +31,12 @@ export default function Register(props: any) {
 			return;
 		}
 		const toaster = toast.loading("Registering user...");
-        // const promise = new Promise((resolve, reject) => {
-        //     setTimeout(() => {
-        //         resolve('Success!');
-        //     }, 50000);
-        // });
-        // await promise;
+		// const promise = new Promise((resolve, reject) => {
+		//     setTimeout(() => {
+		//         resolve('Success!');
+		//     }, 50000);
+		// });
+		// await promise;
 		fetch("http://localhost:3000/api/auth/register", {
 			method: "POST",
 			headers: {

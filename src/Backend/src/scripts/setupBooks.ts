@@ -46,12 +46,11 @@ export async function setupBooks() {
     console.log("Connected to MongoDB successfully");
 
     // Check if books collection already has documents
-    await mongoose.connection
-      .collection("books")
-      .drop()
-      .catch(() => {
-        console.log("No existing books collection to drop");
-      });
+    const existingBooks = await Book.find({});
+    if (existingBooks.length > 0) {
+      console.log("Books collection already has documents");
+      return;
+    }
 
     // Insert sample books
     const insertedBooks = await Book.insertMany(sampleBooks);

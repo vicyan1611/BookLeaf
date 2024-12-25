@@ -1,30 +1,52 @@
-// import { Component, ReactNode, useState } from 'react'
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AccountPageLogo from '../AccountPageLogo'
 import AccountPageInput from '../AccountPageInput'
 import './index.css'
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 function LoginPage(props: any) {
-    const navigate = useNavigate();
     const redirectPath = props.redirectPath
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        axios.post('http://localhost:3000/api/auth/verify', {}, {withCredentials: true}).then((res: any) => {
+            if (res.status === 200) {
+                navigate(redirectPath)
+            }
+        })
+    }, [])
+
     function handleLogin(e: any) { 
         e.preventDefault()
         const username = e.target.username.value
         const password = e.target.password.value
+        const toaster = toast.loading('Logging in...')
         fetch('http://localhost:3000/api/auth/login', {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json"
             },
+            credentials: 'include',
             body: JSON.stringify({username, password})
         })
         .then(res => {
             if (res.status === 200) {
-                toast.success('User logged in successfully')
+                toast.update(toaster, {
+                    render: 'Logged in successfully',
+                    type: 'success',
+                    isLoading: false,
+                    autoClose: 3000
+                })
                 setTimeout(() => navigate(redirectPath), 3000) // Redirect to redirectPath after 3 seconds
             } else {
-                res.text().then(text => console.log("Error " + res.status + ': ' + text))
+                res.text().then(text => toast.update(toaster, {
+                    render: 'Error ' + res.status + ': ' + text,
+                    type: 'error',
+                    isLoading: false,
+                    autoClose: 3000
+                }))
             }
         })
     }

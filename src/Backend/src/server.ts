@@ -5,6 +5,7 @@ import { connectMongoDB } from "./config/config";
 import { getAllBooks, getBookByID } from "./controllers/BookController";
 import { UserController } from './controllers/UserController'
 import apiRouter from "./routes/APIRouter";
+import cookieParser from 'cookie-parser';
 
 console.log(process.env.PORT)
 const app: Express = express();
@@ -20,6 +21,8 @@ const corsOptions: cors.CorsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(cookieParser());
+
 connectMongoDB();
 
 // Basic GET route
