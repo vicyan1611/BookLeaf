@@ -5,6 +5,7 @@ import Reader from "./pages/reading";
 import LoginPageNormalUser from "./pages/login";
 import LoginPageAdmin from "./pages/admin-login";
 import UserProfile from "./pages/userProfile";
+import Register from "./pages/register";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const router = createBrowserRouter([
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
     path: "/userProfile",
     element: <UserProfile />,
   },
+  {
+    path: "/register",
+    element: <Register/>,
+  }
 ]);
 
 function App() {

@@ -45,7 +45,7 @@ function LoginPage(props: any) {
                 <AccountPageInput type='submit' value='Log in'/>
                 <div className='container grid grid-cols-3'>
                     <a className='col-start-1' href="#">Forgot Password?</a>
-                    <a className='col-start-3' href="#" target='_blank'>Need an account? Register now!</a>
+                    <a className='col-start-3' href="/register">Need an account? Register now!</a>
                 </div>
             </form>
         </div>
