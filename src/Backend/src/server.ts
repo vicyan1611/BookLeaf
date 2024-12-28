@@ -25,6 +25,9 @@ app.use(cookieParser());
 
 connectMongoDB();
 
+// set static folder
+app.use(express.static('public'));
+
 // Basic GET route
 app.get("/", (req: Request, res: Response) => {
   res.json({ message: "Welcome to BookLeaf API" });

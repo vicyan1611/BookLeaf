@@ -2,6 +2,7 @@ import mongoose, { Document, Schema } from "mongoose";
 
 export interface IVerification extends Document {
     email: string;
+    user: string;
     OTP: string;
     createDate: string;
     expireDate: string;

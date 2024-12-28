@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { mongo } from "mongoose";
 import { INormalUser, NormalUser } from "../models/NormalUser";
-import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
+import { IVerification, Verification } from "../models/Verification";
+import jwt, { Secret, JwtPayload } from "jsonwebtoken";
 import { configDotenv } from "dotenv";
-import { nodemailer } from "nodemailer";
 import bcrypt from "bcrypt";
+import sendVerificationCode from "../utils/mail.util";
 const saltRounds = 15;
 configDotenv();
 interface AuthorizationControllerType {
@@ -33,10 +33,12 @@ interface LoginData {
 
 const AuthorizationController: AuthorizationControllerType = {
 	login: async (req: Request<{}, {}, LoginData>, res: Response) => {
-		try{
+		try {
 			// Login logic
 			const data = req.body;
-			const user = await NormalUser.findOne({username: data.username}) || await NormalUser.findOne({email: data.username});
+			const user =
+				(await NormalUser.findOne({ username: data.username })) ||
+				(await NormalUser.findOne({ email: data.username }));
 			if (!user) {
 				res.status(404).send("User not found");
 				return;
@@ -47,21 +49,40 @@ const AuthorizationController: AuthorizationControllerType = {
 				return;
 			}
 			// Sending the token
-			const accessToken = jwt.sign({user: {
-				id: user._id,
-				username: user.username,
-				email: user.email
-			}}, process.env.JWT_SECRET as Secret, {expiresIn: '1 days'}); // short-lived token
-			const refreshToken = jwt.sign({user: {
-				id: user._id,
-				username: user.username,
-				email: user.email
-			}}, process.env.JWT_SECRET as Secret, {expiresIn: '30 days'}); // long-lived token
-			res.cookie('accessToken', accessToken, {httpOnly: true, secure: false, maxAge: 24 * 60 * 60}); // 1 day
-			res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: false, maxAge: 30 * 24 * 60 * 60}); // 30 days
+			const accessToken = jwt.sign(
+				{
+					user: {
+						id: user._id,
+						username: user.username,
+						email: user.email,
+					},
+				},
+				process.env.JWT_SECRET as Secret,
+				{ expiresIn: "1 days" }
+			); // short-lived token
+			const refreshToken = jwt.sign(
+				{
+					user: {
+						id: user._id,
+						username: user.username,
+						email: user.email,
+					},
+				},
+				process.env.JWT_SECRET as Secret,
+				{ expiresIn: "30 days" }
+			); // long-lived token
+			res.cookie("accessToken", accessToken, {
+				httpOnly: true,
+				secure: false,
+				maxAge: 24 * 60 * 60,
+			}); // 1 day
+			res.cookie("refreshToken", refreshToken, {
+				httpOnly: true,
+				secure: false,
+				maxAge: 30 * 24 * 60 * 60,
+			}); // 30 days
 			res.status(200).send("User logged in successfully");
-		}
-		catch(error){
+		} catch (error) {
 			console.log(error);
 			res.status(500).send("Internal Server Error");
 		}
@@ -69,21 +90,23 @@ const AuthorizationController: AuthorizationControllerType = {
 	register: async (req: Request<{}, {}, RegisterData>, res: Response) => {
 		try {
 			const data = req.body;
-			const existed = await NormalUser.findOne({email: data.email}) || await NormalUser.findOne({username: data.username});
+			const existed =
+				(await NormalUser.findOne({ email: data.email })) ||
+				(await NormalUser.findOne({ username: data.username }));
 			if (existed) {
 				res.status(409).send("User already exists");
-				return
+				return;
 			}
-            const salt = bcrypt.genSaltSync(saltRounds);
-            const hash = bcrypt.hashSync(data.password, salt);
+			const salt = bcrypt.genSaltSync(saltRounds);
+			const hash = bcrypt.hashSync(data.password, salt);
 			const user: INormalUser = new NormalUser({
-                email: data.email,
-                username: data.username,
-                password: hash,
-                createDate: new Date().toISOString(),
-                avatar: ""
-            });
-            await user.save();
+				email: data.email,
+				username: data.username,
+				password: hash,
+				createDate: new Date().toISOString(),
+				avatar: "",
+			});
+			await user.save();
 			res.status(200).send("User registered successfully");
 		} catch (error: any) {
 			console.log(error);
@@ -92,7 +115,17 @@ const AuthorizationController: AuthorizationControllerType = {
 	},
 	emailVerify: async (req: Request, res: Response) => {
 		const email = req.body.email;
-		
+		const code = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit code
+		sendVerificationCode(email, code);
+		// const verification: IVerification = new Verification({
+		// 	email,
+		// 	code,
+		// 	createDate: new Date().toISOString(),
+		// 	expireDate: new Date(Date.now() + 1000 * 60 * 15).toISOString(), // 15 minutes
+		// 	used: false,
+		// });
+		// await verification.save();
+		res.status(200).send("Email sent");
 	},
 	OTPVerify: async (req: Request, res: Response) => {
 		// Your OTP verification logic here
@@ -165,8 +198,7 @@ const AuthorizationController: AuthorizationControllerType = {
 					res.clearCookie("refreshToken");
 					res.status(401).send("Invalid token");
 				}
-			}
-			else{
+			} else {
 				console.log("No token found");
 				res.status(401).send("No token found");
 			}

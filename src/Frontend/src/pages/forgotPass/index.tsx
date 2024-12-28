@@ -201,7 +201,7 @@ function OTPInput(props: OTPInputProps) {
 			ref={formRef}
 			className="flex-col items-center justify-center w-full gap-4 min-w-96 max-w-lg hidden"
 		>
-			<div className="flex w-full h-4 text-lg font-medium items-center justify-center">
+			<div className="flex w-full h-4 text-sm font-medium items-center justify-center">
 				We have sent a verification code to {props.email}
 			</div>
 			<div className="OTPInput w-full h-32 flex items-center justify-evenly">

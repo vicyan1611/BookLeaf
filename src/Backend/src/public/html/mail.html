@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+            width: 100%;
+            height: 200px;
+        }
+        .verification-code {
+            background-color: #f0f0f0;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+            letter-spacing: 4px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .footer {
+            text-align: center;
+            color: #888888;
+            font-size: 12px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="../image/BookLeaf_Logo_NoBG.png" alt="BookLeaf Logo" width="200" height="200">
+        </div>
+        <h2>Email Verification</h2>
+        <p>Dear User,</p>
+        <p>Thank you for registering with BookLeaf. Please use the verification code below to verify your email address:</p>
+        <div class="verification-code">
+            {code}
+        </div>
+        <p>If you did not request this, please ignore this email.</p>
+        <p>Best regards,<br>The BookLeaf Team</p>
+        <div class="footer">
+            &copy; 2024 BookLeaf. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>
