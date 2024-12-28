@@ -8,6 +8,7 @@ export interface IUser extends Document {
     email: string;
     createDate: string;
     avatar: string;
+    verified: boolean;
 }
 
 export const UserSchema = {
@@ -16,4 +17,5 @@ export const UserSchema = {
     email: {type: String, required: true},
     createDate: {type: String, required: true},
     avatar: {type: String, required: false},
+    verified: {type: Boolean, required: true, default: false},
 }

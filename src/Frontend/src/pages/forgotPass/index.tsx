@@ -1,15 +1,92 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, forwardRef } from "react";
 import AccountPageLogo from "../../components/AccountPageLogo";
-import AccountPageInput from "../../components/AccountPageInput";
 import { toast } from "react-toastify";
 import axios from "axios";
 
-export default function ResetPass(props: any) {
-	const [email, setEmail] = useState("placeholder");
+interface EmailInputProps {
+	setChangeOTP: React.Dispatch<React.SetStateAction<boolean>>;
+	changeOTP: boolean;
+	setEmail: React.Dispatch<React.SetStateAction<string>>;
+}
+interface PasswordInputProps {
+	changePassword: boolean;
+}
+
+interface OTPInputProps {
+	email: string;
+	setChangePassword: React.Dispatch<React.SetStateAction<boolean>>;
+	changePassword: boolean;
+	changeOTP: boolean;
+}
+
+const EmailInput = forwardRef<HTMLInputElement, EmailInputProps>(
+	(props, ref) => {
+		const formRef = useRef<HTMLFormElement>(null);
+		function handleEmailSubmit(e: React.FormEvent<HTMLFormElement>) {
+			e.preventDefault();
+			axios
+				.post(
+					"http://localhost:3000/api/auth/reset-password/verify-email",
+					{
+						email: (
+							ref as React.MutableRefObject<HTMLInputElement | null>
+						).current!.value,
+					}
+				)
+				.then((res) => {
+					if (res.status === 200) {
+						props.setChangeOTP(true);
+					}
+				})
+				.catch((err) => {
+					toast.error(err.response.data.message);
+				});
+			props.setChangeOTP(true);
+		}
+		function handleEmailInput(e: React.ChangeEvent<HTMLInputElement>) {
+			props.setEmail(e.target.value);
+		}
+		useEffect(() => {
+			if (props.changeOTP) {
+				formRef.current!.style.display = "none";
+			}
+		}, [props]);
+		return (
+			<form
+				onSubmit={(e) => {
+					handleEmailSubmit(e);
+				}}
+				ref={formRef}
+				className="flex flex-col items-center justify-center w-full gap-4 min-w-96 max-w-lg"
+			>
+				<input
+					className="w-full px-2 py-2 rounded-lg border-2 focus:outline-none"
+					ref={ref}
+					name="email"
+					type="email"
+					placeholder="Enter your email"
+					required
+					onChange={(e) => {
+						handleEmailInput(e);
+					}}
+				/>
+				<input
+					className="w-full px-2 py-2 rounded-lg border-2 focus:outline-none cursor-pointer"
+					type="submit"
+					placeholder="Send verification code"
+				/>
+				<div className="container flex flex-row items-center justify-center">
+					<a href="/login">Remember your password? Login now!</a>
+				</div>
+			</form>
+		);
+	}
+);
+
+function OTPInput(props: OTPInputProps) {
 	const [otp, setOTP] = useState("");
-	const passwordRef = useRef<HTMLInputElement>(null);
-	const confirmPasswordRef = useRef<HTMLInputElement>(null);
+	const formRef = useRef<HTMLFormElement>(null);
 	const OTPRefs = [
 		useRef<HTMLInputElement>(null),
 		useRef<HTMLInputElement>(null),
@@ -18,30 +95,22 @@ export default function ResetPass(props: any) {
 		useRef<HTMLInputElement>(null),
 		useRef<HTMLInputElement>(null),
 	];
-	const navigate = useNavigate();
-	useEffect(() => {
-		axios
-			.post(
-				"http://localhost:3000/api/auth/verify",
-				{},
-				{ withCredentials: true }
-			)
-			.then((res: any) => {
-				if (res.status === 200) {
-					navigate("/");
-				}
-			});
-	}, []);
-	const handleOTPInputs = (e: any, index: number) => {
+	const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+		e.preventDefault();
+		const data = e.clipboardData.getData("text");
+		for (let i = 0; i < 6; i++) {
+			OTPRefs[i].current!.value = data[i];
+		}
+	};
+	const handleOTPInputs = (e: React.KeyboardEvent, index: number) => {
 		const validKeys = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 		e.preventDefault();
-		if (e.key === "Control" && e.key === "v") {
-			console.log("Pasting");
-			handlePaste(e);
+		if (e.ctrlKey && e.key === "v") {
+			handlePaste(e as unknown as React.ClipboardEvent<HTMLInputElement>);
 		}
 		if (index < 5) {
 			if (e.key === "Backspace") {
-				if (e.target.value === "") {
+				if ((e.target as HTMLInputElement).value === "") {
 					if (index > 0) {
 						OTPRefs[index].current!.value = "";
 						OTPRefs[index - 1].current?.focus();
@@ -72,7 +141,7 @@ export default function ResetPass(props: any) {
 		}
 		if (index === 5) {
 			if (e.key === "Backspace") {
-				if (e.target.value === "") {
+				if ((e.target as HTMLInputElement).value === "") {
 					OTPRefs[index].current!.value = "";
 					OTPRefs[index - 1].current?.focus();
 				} else {
@@ -96,164 +165,237 @@ export default function ResetPass(props: any) {
 			setOTP(otp);
 		}
 	};
-	const handlePaste = (e: any) => {
+	function handleOTPSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
-		const data = e.clipboardData.getData("text");
-		for (let i = 0; i < 6; i++) {
-			OTPRefs[i].current!.value = data[i];
+		axios
+			.post("http://localhost:3000/api/auth/reset-password/verify-OTP", {
+				email: props.email,
+				otp: otp,
+			})
+			.then((res) => {
+				if (res.status === 200) {
+					toast.success("OTP verified successfully");
+					setTimeout(() => {
+						props.setChangePassword(true);
+					}, 1000);
+				}
+			})
+			.catch((err) => {
+				toast.error(err.response.data.message);
+			});
+		props.setChangePassword(true);
+	}
+	useEffect(() => {
+		if (props.changeOTP) {
+			formRef.current!.style.display = "flex";
 		}
-	};
+	}, [props]);
+	useEffect(() => {
+		if (props.changePassword) {
+			formRef.current!.style.display = "none";
+		}
+	}, [props]);
+	return (
+		<form
+			onSubmit={handleOTPSubmit}
+			ref={formRef}
+			className="flex-col items-center justify-center w-full gap-4 min-w-96 max-w-lg hidden"
+		>
+			<div className="flex w-full h-4 text-lg font-medium items-center justify-center">
+				We have sent a verification code to {props.email}
+			</div>
+			<div className="OTPInput w-full h-32 flex items-center justify-evenly">
+				<input
+					onKeyDown={(event) => {
+						handleOTPInputs(event, 0);
+					}}
+					onPaste={(e) => {
+						handlePaste(e);
+					}}
+					type="text"
+					ref={OTPRefs[0]}
+					className="w-16 h-28 border border-black rounded-lg text-center text-4xl"
+					maxLength={1}
+				/>
+				<input
+					onKeyDown={(event) => {
+						handleOTPInputs(event, 1);
+					}}
+					onPaste={(e) => {
+						handlePaste(e);
+					}}
+					type="text"
+					ref={OTPRefs[1]}
+					className="w-16 h-28 border border-black rounded-lg text-center text-4xl"
+					maxLength={1}
+				/>
+				<input
+					onKeyDown={(event) => {
+						handleOTPInputs(event, 2);
+					}}
+					onPaste={(e) => {
+						handlePaste(e);
+					}}
+					type="text"
+					ref={OTPRefs[2]}
+					className="w-16 h-28 border border-black rounded-lg text-center text-4xl"
+					maxLength={1}
+				/>
+				<input
+					onKeyDown={(event) => {
+						handleOTPInputs(event, 3);
+					}}
+					onPaste={(e) => {
+						handlePaste(e);
+					}}
+					type="text"
+					ref={OTPRefs[3]}
+					className="w-16 h-28 border border-black rounded-lg text-center text-4xl"
+					maxLength={1}
+				/>
+				<input
+					onKeyDown={(event) => {
+						handleOTPInputs(event, 4);
+					}}
+					onPaste={(e) => {
+						handlePaste(e);
+					}}
+					type="text"
+					ref={OTPRefs[4]}
+					className="w-16 h-28 border border-black rounded-lg text-center text-4xl"
+					maxLength={1}
+				/>
+				<input
+					onKeyDown={(event) => {
+						handleOTPInputs(event, 5);
+					}}
+					onPaste={(e) => {
+						handlePaste(e);
+					}}
+					type="text"
+					ref={OTPRefs[5]}
+					className="w-16 h-28 border border-black rounded-lg text-center text-4xl"
+					maxLength={1}
+				/>
+			</div>
+			<input
+				className="w-full px-2 py-2 rounded-lg border-2 focus:outline-none"
+				type="submit"
+				placeholder="Continue"
+			/>
+		</form>
+	);
+}
+
+const PasswordInput = (props: PasswordInputProps) => {
+	const navigate = useNavigate();
+	const passwordRef = useRef<HTMLInputElement>(null);
+	const confirmPasswordRef = useRef<HTMLInputElement>(null);
+	const formRef = useRef<HTMLFormElement>(null);
 	const checkConfirmPassword = (
 		password: string,
 		confirmPassword: string
 	) => {
 		return password === confirmPassword;
 	};
-	const handlePasswordChange = (
-		e: any,
-	) => {
+	const handlePasswordChange = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-        const password = passwordRef.current!.value;
-        const confirmPassword = confirmPasswordRef.current!.value;
+		const password = passwordRef.current!.value;
+		const confirmPassword = confirmPasswordRef.current!.value;
 		if (checkConfirmPassword(password, confirmPassword)) {
 			axios
 				.post("http://localhost:3000/api/auth/reset-password", {
-					email: email,
-					otp: otp,
 					password: password,
 				})
-				.then((res: any) => {
+				.then((res) => {
 					if (res.status === 200) {
 						toast.success("Password changed successfully");
 						navigate("/login");
 					}
 				})
-				.catch((err: any) => {
+				.catch((err) => {
 					toast.error(err.response.data.message);
 				});
 		} else {
 			toast.error("Passwords do not match");
 		}
 	};
+	useEffect(() => {
+		if (props.changePassword) {
+			formRef.current!.style.display = "flex";
+		}
+	}, [props]);
+	return (
+		<form
+			onSubmit={(event) => {
+				handlePasswordChange(event);
+			}}
+			ref={formRef}
+			className="flex-col items-center justify-center w-full gap-4 min-w-96 max-w-lg hidden"
+		>
+			<input
+				className="w-full px-2 py-2 rounded-lg border-2 focus:outline-none"
+				ref={passwordRef}
+				name="password"
+				type="password"
+				placeholder="New password"
+				required
+			/>
+			<input
+				className="w-full px-2 py-2 rounded-lg border-2 focus:outline-none"
+				ref={confirmPasswordRef}
+				name="confirmPassword"
+				type="password"
+				placeholder="Re-enter new password"
+				required
+			/>
+			<input
+				className="w-full px-2 py-2 rounded-lg border-2 focus:outline-none cursor-pointer"
+				type="submit"
+				placeholder="Confirm"
+			/>
+		</form>
+	);
+};
+
+export default function ResetPass() {
+	const navigate = useNavigate();
+	const emailRef = useRef<HTMLInputElement>(null);
+	const [email, setEmail] = useState("");
+	const [changeOTP, setChangeOTP] = useState(false);
+	const [changePassword, setChangePassword] = useState(false);
+	useEffect(() => {
+		axios.put(
+				"http://localhost:3000/api/auth/verify",
+				{},
+				{ withCredentials: true }
+			)
+			.then((res) => {
+				if (res.status === 200) {
+					navigate("/");
+				}
+			});
+	}, []);
+
+	useEffect(() => {}, [changeOTP]);
+
+	useEffect(() => {}, [changePassword]);
 	return (
 		<div className="box-border px-4 lg:w-2/5 md:w-4/5 sm:w-full flex flex-col items-center justify-center">
 			<AccountPageLogo />
-			<form className="flex flex-col items-center justify-center w-full gap-4 min-w-96 max-w-lg">
-				<AccountPageInput
-					name="email"
-					type="email"
-					placeholder="Email"
-				/>
-				<AccountPageInput
-					type="submit"
-					value="Send verification code"
-				/>
-				<div className="container flex flex-row items-center justify-center">
-					<a href="/login">Remember your password? Login now!</a>
-				</div>
-			</form>
-			<form className="flex flex-col items-center justify-center w-full gap-4 min-w-96 max-w-lg">
-				<div className="flex w-full h-4 text-lg font-medium items-center justify-center">
-					We have sent a verification code to {email}
-				</div>
-				<div className="OTPInput w-full h-32 flex items-center justify-evenly">
-					<input
-						onKeyDown={(event) => {
-							handleOTPInputs(event, 0);
-						}}
-						onPaste={(e) => {
-							handlePaste(e);
-						}}
-						type="text"
-						ref={OTPRefs[0]}
-						className="w-16 h-28 border border-black rounded-lg text-center text-4xl"
-						maxLength={1}
-					/>
-					<input
-						onKeyDown={(event) => {
-							handleOTPInputs(event, 1);
-						}}
-						onPaste={(e) => {
-							handlePaste(e);
-						}}
-						type="text"
-						ref={OTPRefs[1]}
-						className="w-16 h-28 border border-black rounded-lg text-center text-4xl"
-						maxLength={1}
-					/>
-					<input
-						onKeyDown={(event) => {
-							handleOTPInputs(event, 2);
-						}}
-						onPaste={(e) => {
-							handlePaste(e);
-						}}
-						type="text"
-						ref={OTPRefs[2]}
-						className="w-16 h-28 border border-black rounded-lg text-center text-4xl"
-						maxLength={1}
-					/>
-					<input
-						onKeyDown={(event) => {
-							handleOTPInputs(event, 3);
-						}}
-						onPaste={(e) => {
-							handlePaste(e);
-						}}
-						type="text"
-						ref={OTPRefs[3]}
-						className="w-16 h-28 border border-black rounded-lg text-center text-4xl"
-						maxLength={1}
-					/>
-					<input
-						onKeyDown={(event) => {
-							handleOTPInputs(event, 4);
-						}}
-						onPaste={(e) => {
-							handlePaste(e);
-						}}
-						type="text"
-						ref={OTPRefs[4]}
-						className="w-16 h-28 border border-black rounded-lg text-center text-4xl"
-						maxLength={1}
-					/>
-					<input
-						onKeyDown={(event) => {
-							handleOTPInputs(event, 5);
-						}}
-						onPaste={(e) => {
-							handlePaste(e);
-						}}
-						type="text"
-						ref={OTPRefs[5]}
-						className="w-16 h-28 border border-black rounded-lg text-center text-4xl"
-						maxLength={1}
-					/>
-				</div>
-				<AccountPageInput type="submit" value="Next" />
-			</form>
-			<form onSubmit={(event)=>{event.preventDefault()}} className="flex flex-col items-center justify-center w-full gap-4 min-w-96 max-w-lg">
-				<AccountPageInput
-					name="new-password"
-					type="password"
-					placeholder="New Password"
-                    ref={passwordRef}
-				/>
-				<AccountPageInput
-					name="confirm-password"
-					type="password"
-					placeholder="Re-enter the new password"
-                    ref={confirmPasswordRef}
-				/>
-				<AccountPageInput
-					type="submit"
-					value="Confirm"
-					onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-						handlePasswordChange(event);
-					}}
-				/>
-			</form>
-			<form className="flex flex-col items-center justify-center w-full gap-4 min-w-96 max-w-lg"></form>
+			<EmailInput
+				ref={emailRef}
+				setChangeOTP={setChangeOTP}
+				setEmail={setEmail}
+				changeOTP={changeOTP}
+			/>
+			<OTPInput
+				email={email}
+				setChangePassword={setChangePassword}
+				changePassword={changePassword}
+				changeOTP={changeOTP}
+			/>
+			<PasswordInput changePassword={changePassword} />
 		</div>
 	);
 }

@@ -3,12 +3,15 @@ import { mongo } from "mongoose";
 import { INormalUser, NormalUser } from "../models/NormalUser";
 import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
 import { configDotenv } from "dotenv";
+import { nodemailer } from "nodemailer";
 import bcrypt from "bcrypt";
 const saltRounds = 15;
 configDotenv();
 interface AuthorizationControllerType {
 	login: (req: Request, res: Response) => Promise<void>;
 	register: (req: Request, res: Response) => Promise<void>;
+	emailVerify: (req: Request, res: Response) => Promise<void>;
+	OTPVerify: (req: Request, res: Response) => Promise<void>;
 	resetPassword: (req: Request, res: Response) => Promise<void>;
 	verify: (req: Request, res: Response) => Promise<void>;
 }
@@ -86,6 +89,13 @@ const AuthorizationController: AuthorizationControllerType = {
 			console.log(error);
 			res.status(500).send("Internal Server Error");
 		}
+	},
+	emailVerify: async (req: Request, res: Response) => {
+		const email = req.body.email;
+		
+	},
+	OTPVerify: async (req: Request, res: Response) => {
+		// Your OTP verification logic here
 	},
 	resetPassword: async (req: Request, res: Response) => {
 		// Your reset password logic here

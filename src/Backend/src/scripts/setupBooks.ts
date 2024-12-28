@@ -1,8 +1,8 @@
 // src/scripts/setupDatabase.ts
 import mongoose from "mongoose";
 import { Book } from "../models/Book";
-
-const MONGODB_URI = "mongodb://localhost:27017/bookleaf";
+import { config } from "dotenv";
+config();
 
 const sampleBooks = [
   {
@@ -42,9 +42,8 @@ const sampleBooks = [
 export async function setupBooks() {
   try {
     // Connect to MongoDB
-    await mongoose.connect(MONGODB_URI);
+    await mongoose.connect(process.env.MONGODB_URI as string);
     console.log("Connected to MongoDB successfully");
-
     // Check if books collection already has documents
     const existingBooks = await Book.find({});
     if (existingBooks.length > 0) {
