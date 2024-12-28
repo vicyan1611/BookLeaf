@@ -7,7 +7,6 @@ import { UserController } from './controllers/UserController'
 import apiRouter from "./routes/APIRouter";
 import cookieParser from 'cookie-parser';
 
-console.log(process.env.PORT)
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
@@ -45,6 +44,7 @@ app.get("/api/books", getAllBooks);
 
 app.post('/login', UserController.post);
 
+// API Router
 app.use('/api', apiRouter);
 
 // Start server

@@ -1,5 +1,6 @@
-import { Router } from "express";
+import { Router, Request, Response} from "express";
 import authorizationController from "../controllers/AuthorizationController";
+import verify from "../middlewares/verifyToken";
 
 const authorizationRouter = Router();
 
@@ -11,4 +12,9 @@ authorizationRouter.put("/reset-password", authorizationController.resetPassword
 authorizationRouter.post("/verify", authorizationController.verify);
 authorizationRouter.post("/send-verification-mail", authorizationController.sendVerificationEmail);
 authorizationRouter.get("/verify-account", authorizationController.accountVerify);
+
+
+authorizationRouter.get("/test", verify, (req: Request, res: Response): void => {
+    res.send("Hello World");
+});
 export default authorizationRouter;

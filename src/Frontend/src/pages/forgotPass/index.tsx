@@ -389,7 +389,7 @@ export default function ResetPass() {
 	const [changePassword, setChangePassword] = useState(false);
 	useEffect(() => {
 		axios
-			.put(
+			.post(
 				"http://localhost:3000/api/auth/verify",
 				{},
 				{ withCredentials: true }

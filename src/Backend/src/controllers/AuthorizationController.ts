@@ -216,6 +216,7 @@ const AuthorizationController: AuthorizationControllerType = {
 						}
 					} else if (refreshCookieToken) {
 						// Refresh token logic
+						console.log(refreshCookieToken);
 						const decoded = jwt.verify(
 							refreshCookieToken,
 							process.env.JWT_SECRET as Secret
