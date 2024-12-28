@@ -12,6 +12,8 @@ interface AuthorizationControllerType {
 	register: (req: Request, res: Response) => Promise<void>;
 	emailVerify: (req: Request, res: Response) => Promise<void>;
 	OTPVerify: (req: Request, res: Response) => Promise<void>;
+	accountVerify: (req: Request, res: Response) => Promise<void>;
+	sendVerificationEmail: (req: Request, res: Response) => Promise<void>;
 	resetPassword: (req: Request, res: Response) => Promise<void>;
 	verify: (req: Request, res: Response) => Promise<void>;
 }
@@ -105,9 +107,10 @@ const AuthorizationController: AuthorizationControllerType = {
 				password: hash,
 				createDate: new Date().toISOString(),
 				avatar: "",
+				verified: false,
 			});
 			await user.save();
-			res.status(200).send("User registered successfully");
+			res.status(200).send("User registered successfully, please verify your email");
 		} catch (error: any) {
 			console.log(error);
 			res.status(500).send("Internal Server Error");
@@ -115,26 +118,75 @@ const AuthorizationController: AuthorizationControllerType = {
 	},
 	emailVerify: async (req: Request, res: Response) => {
 		const email = req.body.email;
+		const user = await NormalUser.findOne({email: email});
+		if (!user) {
+			res.status(404).send("User not found");
+			return;
+		}
 		const code = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit code
+		const verification: IVerification = new Verification({
+			email: email,
+			OTP: code,
+			createDate: new Date().toISOString(),
+			expireDate: new Date(Date.now() + 1000 * 60 * 15).toISOString(), // 15 minutes
+			used: false,
+		});
+		await verification.save();
 		sendVerificationCode(email, code);
-		// const verification: IVerification = new Verification({
-		// 	email,
-		// 	code,
-		// 	createDate: new Date().toISOString(),
-		// 	expireDate: new Date(Date.now() + 1000 * 60 * 15).toISOString(), // 15 minutes
-		// 	used: false,
-		// });
-		// await verification.save();
 		res.status(200).send("Email sent");
 	},
 	OTPVerify: async (req: Request, res: Response) => {
-		// Your OTP verification logic here
+		const email = req.body.email;
+		const code = req.body.code;
+		console.log(email, code);
+		const verification = await Verification.findOne({
+			email: email,
+			OTP: code,
+			used: false,
+			expireDate: { $gt: new Date().toISOString() },
+		});
+		if (!verification) {
+			res.status(400).send("Invalid code or code may have expired");
+			return;
+		}
+		verification.used = true;
+		await verification.save();
+		const associatedUser = await NormalUser.findOne({
+			email: email,
+		});
+		if (!associatedUser) {
+			res.status(404).send("User not found");
+			return;
+		}
+		res.status(200).send("Email verified");
+	},
+	accountVerify: async (req: Request, res: Response) => {
+		// TODO: Implement account verification logic
+	},
+	sendVerificationEmail: async (req: Request, res: Response) => {
+		// TODO: Implement send verification email logic
 	},
 	resetPassword: async (req: Request, res: Response) => {
-		// Your reset password logic here
+		const email = req.body.email;
+		const user = await NormalUser.findOne({email: email});
+		if (!user) {
+			res.status(404).send("User not found");
+			return;
+		}
+		try{
+			const password = req.body.password;
+			const salt = bcrypt.genSaltSync(saltRounds);
+			const hash = bcrypt.hashSync(password, salt);
+			user.password = hash;
+			await user.save();
+			res.status(200).send("Password reset successfully");
+		}
+		catch(error){
+			console.log(error);
+			res.status(500).send("Internal Server Error");
+		}
 	},
 	verify: async (req: Request, res: Response) => {
-		console.log(req.cookies);
 		if (req.cookies) {
 			const accessCookieToken = req.cookies.accessToken;
 			const refreshCookieToken = req.cookies.refreshToken;

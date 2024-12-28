@@ -10,6 +10,7 @@ interface EmailInputProps {
 	setEmail: React.Dispatch<React.SetStateAction<string>>;
 }
 interface PasswordInputProps {
+	email: string;
 	changePassword: boolean;
 }
 
@@ -25,6 +26,7 @@ const EmailInput = forwardRef<HTMLInputElement, EmailInputProps>(
 		const formRef = useRef<HTMLFormElement>(null);
 		function handleEmailSubmit(e: React.FormEvent<HTMLFormElement>) {
 			e.preventDefault();
+			const toaster = toast.loading("Sending verification code...");
 			axios
 				.post(
 					"http://localhost:3000/api/auth/reset-password/verify-email",
@@ -37,12 +39,22 @@ const EmailInput = forwardRef<HTMLInputElement, EmailInputProps>(
 				.then((res) => {
 					if (res.status === 200) {
 						props.setChangeOTP(true);
+						toast.update(toaster, {
+							render: "Verification code sent successfully",
+							type: "success",
+							autoClose: 2000,
+							isLoading: false,
+						});
 					}
 				})
 				.catch((err) => {
-					toast.error(err.response.data.message);
+					toast.update(toaster, {
+						render: "Error occurred: " + err.response.data,
+						type: "error",
+						autoClose: 2000,
+						isLoading: false,
+					});
 				});
-			props.setChangeOTP(true);
 		}
 		function handleEmailInput(e: React.ChangeEvent<HTMLInputElement>) {
 			props.setEmail(e.target.value);
@@ -85,7 +97,7 @@ const EmailInput = forwardRef<HTMLInputElement, EmailInputProps>(
 );
 
 function OTPInput(props: OTPInputProps) {
-	const [otp, setOTP] = useState("");
+	const [code, setCode] = useState("");
 	const formRef = useRef<HTMLFormElement>(null);
 	const OTPRefs = [
 		useRef<HTMLInputElement>(null),
@@ -97,17 +109,15 @@ function OTPInput(props: OTPInputProps) {
 	];
 	const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
 		e.preventDefault();
-		const data = e.clipboardData.getData("text");
+		const data = e.clipboardData.getData("Text");
 		for (let i = 0; i < 6; i++) {
 			OTPRefs[i].current!.value = data[i];
 		}
+		setCode(data);
 	};
 	const handleOTPInputs = (e: React.KeyboardEvent, index: number) => {
 		const validKeys = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 		e.preventDefault();
-		if (e.ctrlKey && e.key === "v") {
-			handlePaste(e as unknown as React.ClipboardEvent<HTMLInputElement>);
-		}
 		if (index < 5) {
 			if (e.key === "Backspace") {
 				if ((e.target as HTMLInputElement).value === "") {
@@ -162,31 +172,41 @@ function OTPInput(props: OTPInputProps) {
 			for (let i = 0; i < 6; i++) {
 				otp += OTPRefs[i].current!.value;
 			}
-			setOTP(otp);
+			setCode(otp);
 		}
 	};
 	function handleOTPSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
+		const toaster2 = toast.loading("Verifying OTP...");
 		axios
 			.post("http://localhost:3000/api/auth/reset-password/verify-OTP", {
 				email: props.email,
-				otp: otp,
+				code: code,
 			})
 			.then((res) => {
 				if (res.status === 200) {
-					toast.success("OTP verified successfully");
+					toast.update(toaster2, {
+						render: "OTP verified successfully",
+						type: "success",
+						autoClose: 2000,
+						isLoading: false,
+					});
 					setTimeout(() => {
 						props.setChangePassword(true);
 					}, 1000);
 				}
 			})
 			.catch((err) => {
-				toast.error(err.response.data.message);
+				toast.update(toaster2, {
+					render: "Error occurred: " + err.response.data,
+					type: "error",
+					autoClose: 2000,
+					isLoading: false,
+				});
 			});
-		props.setChangePassword(true);
 	}
 	useEffect(() => {
-		if (props.changeOTP) {
+		if (props.changeOTP && props.email) {
 			formRef.current!.style.display = "flex";
 		}
 	}, [props]);
@@ -304,13 +324,16 @@ const PasswordInput = (props: PasswordInputProps) => {
 		const confirmPassword = confirmPasswordRef.current!.value;
 		if (checkConfirmPassword(password, confirmPassword)) {
 			axios
-				.post("http://localhost:3000/api/auth/reset-password", {
+				.put("http://localhost:3000/api/auth/reset-password", {
 					password: password,
+					email: props.email,
 				})
 				.then((res) => {
 					if (res.status === 200) {
 						toast.success("Password changed successfully");
-						navigate("/login");
+						setTimeout(() => {
+							navigate("/login");
+						}, 10000);
 					}
 				})
 				.catch((err) => {
@@ -365,7 +388,8 @@ export default function ResetPass() {
 	const [changeOTP, setChangeOTP] = useState(false);
 	const [changePassword, setChangePassword] = useState(false);
 	useEffect(() => {
-		axios.put(
+		axios
+			.put(
 				"http://localhost:3000/api/auth/verify",
 				{},
 				{ withCredentials: true }
@@ -395,7 +419,7 @@ export default function ResetPass() {
 				changePassword={changePassword}
 				changeOTP={changeOTP}
 			/>
-			<PasswordInput changePassword={changePassword} />
+			<PasswordInput changePassword={changePassword} email={email} />
 		</div>
 	);
 }

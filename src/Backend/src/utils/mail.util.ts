@@ -17,14 +17,19 @@ const transpoter = nodemailer.createTransport({
 
 
 const sendVerificationCode = async (email: string, code: string) => {
-    const htmlPath = path.join(__dirname, '../public/html/mail.html')
+    const htmlPath = path.join(__dirname, '../public/html/reset-pass-mail.html')
     const html = fs.readFileSync(htmlPath, 'utf-8')
     const mailOptions = {
         from: process.env.MAIL_USER,
         to: email,
-        subject: 'Verification Code',
+        subject: 'Bookleaf account verification code',
         html: html.replace('{code}', code),
-        priority: "high" as "high"
+        priority: "high" as "high",
+        attachments: [{
+            filename: 'logo.png',
+            path: path.join(__dirname, '../public/image/BookLeaf_Logo_NoBG.png'),
+            cid: 'logo'
+        }]
     }
     transpoter.sendMail(mailOptions, (err, info) => {
         if (err) {
