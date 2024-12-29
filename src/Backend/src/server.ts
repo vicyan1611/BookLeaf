@@ -3,10 +3,10 @@ require("dotenv").config();
 import cors from "cors";
 import { connectMongoDB } from "./config/config";
 import { getAllBooks, getBookByID } from "./controllers/BookController";
-import morgan from "morgan";
 import { UserController } from './controllers/UserController'
+import apiRouter from "./routes/APIRouter";
+import cookieParser from 'cookie-parser';
 
-console.log(process.env.PORT)
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
@@ -20,9 +20,12 @@ const corsOptions: cors.CorsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(morgan("combined"));
+app.use(cookieParser());
 
 connectMongoDB();
+
+// set static folder
+app.use(express.static('public'));
 
 // Basic GET route
 app.get("/", (req: Request, res: Response) => {
@@ -40,6 +43,9 @@ app.get("/api/books/:bookID", getBookByID);
 app.get("/api/books", getAllBooks);
 
 app.post('/login', UserController.post);
+
+// API Router
+app.use('/api', apiRouter);
 
 // Start server
 app.listen(port, () => {

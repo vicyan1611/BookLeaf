@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, model} from "mongoose";
 export enum usertype {
     Admin, NormalUser
 }
@@ -8,6 +8,7 @@ export interface IUser extends Document {
     email: string;
     createDate: string;
     avatar: string;
+    verified: boolean;
 }
 
 export const UserSchema = {
@@ -15,5 +16,6 @@ export const UserSchema = {
     password: {type: String, required: true},
     email: {type: String, required: true},
     createDate: {type: String, required: true},
-    avatar: {type: String, required: true},
+    avatar: {type: String, required: false},
+    verified: {type: Boolean, required: true, default: false},
 }

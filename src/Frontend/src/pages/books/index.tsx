@@ -4,6 +4,7 @@ import { IoSearchOutline } from "react-icons/io5";
 import { LuBookOpen } from "react-icons/lu";
 import { FaCheck } from "react-icons/fa6";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SearchBar = () => {
   return (
@@ -132,7 +133,17 @@ const SideBar = () => {
 
 function Books() {
   const [books, setBooks] = useState<Book[]>([]);
-
+  const navigate = useNavigate();
+  useEffect(() => {
+    fetch("http://localhost:3000/api/auth/verify", {
+      method: "POST",
+      credentials: "include",
+    }).then((res) => {
+      if (res.status !== 200) {
+        navigate("/login");
+      }
+    })
+  })
   useEffect(() => {
     const loadBooks = async () => {
       try {
@@ -142,7 +153,6 @@ function Books() {
         console.error("Error loading books:", err);
       }
     };
-
     loadBooks();
   }, []);
 

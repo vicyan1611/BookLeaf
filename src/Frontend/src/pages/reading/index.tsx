@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { ReactReader, ReactReaderStyle } from "react-reader";
 import { MdFullscreen } from "react-icons/md";
 import { MdFontDownload } from "react-icons/md";
@@ -35,6 +36,7 @@ const style: object = {
 };
 
 const Reader: React.FC = () => {
+	const navigate = useNavigate();
 	const [location, setLocation] = useState<string | null>(null);
 	const [fullscreenMode, setFullscreenMode] = useState<boolean>(false);
 	const [page, setPage] = useState<string>("0");
@@ -56,6 +58,16 @@ const Reader: React.FC = () => {
 		}
 		setLocation(epubcifi);
 	};
+	useEffect(() => {
+		fetch("http://localhost:3000/api/auth/verify", {
+			method: "POST",
+			credentials: "include",
+		}).then((res) => {
+			if (res.status !== 200) {
+				navigate("/login");
+			}
+		});
+	}, []);
 	const toggleBookmark = () => {
 		try {
 			setBookmark((bookmark) => !bookmark);
@@ -136,80 +148,84 @@ const Reader: React.FC = () => {
 	};
 	const changeFont = (font: string) => {
 		if (renditionRef.current) {
-			renditionRef.current.themes.register('custom', {
+			renditionRef.current.themes.register("custom", {
 				p: {
-					'font-family': font,
-				}
-			})
-			renditionRef.current.themes.select('custom');
+					"font-family": font,
+				},
+			});
+			renditionRef.current.themes.select("custom");
 		}
 	};
 	const changeFontWeight = (weight: string) => {
 		if (renditionRef.current) {
-			renditionRef.current.themes.register('custom', {
+			renditionRef.current.themes.register("custom", {
 				p: {
-					'font-weight': weight,
-				}
-			})
-			renditionRef.current.themes.select('custom');
+					"font-weight": weight,
+				},
+			});
+			renditionRef.current.themes.select("custom");
 		}
-	}
+	};
 	const changeLineHeight = (height: string) => {
 		if (renditionRef.current) {
-			renditionRef.current.themes.register('custom', {
+			renditionRef.current.themes.register("custom", {
 				p: {
-					'line-height': height + 'px',
-				}
-			})
-			renditionRef.current.themes.select('custom');
+					"line-height": height + "px",
+				},
+			});
+			renditionRef.current.themes.select("custom");
 		}
-	}
+	};
 	const changeTheme = (theme: boolean) => {
-		if(renditionRef.current) {
-			const epubTheme = renditionRef.current.themes
-			if(theme){ // dark theme
-				epubTheme.override('color', '#fff');
-				epubTheme.override('background', '#000');
+		if (renditionRef.current) {
+			const epubTheme = renditionRef.current.themes;
+			if (theme) {
+				// dark theme
+				epubTheme.override("color", "#fff");
+				epubTheme.override("background", "#000");
+			} else {
+				// light theme
+				epubTheme.override("color", "#000");
+				epubTheme.override("background", "#fff");
 			}
-			else{ // light theme
-				epubTheme.override('color', '#000');
-				epubTheme.override('background', '#fff');
-			}
-			renditionRef.current.themes.select('custom');
+			renditionRef.current.themes.select("custom");
 		}
-	}
+	};
 	useEffect(() => {
 		if (renditionRef.current) {
-			renditionRef.current.themes.override('color', '#000');
-			renditionRef.current.themes.override('background', '#fff');
+			renditionRef.current.themes.override("color", "#000");
+			renditionRef.current.themes.override("background", "#fff");
 		}
 	}, []);
 	useEffect(() => {
 		const bookID = window.location.pathname.split("/")[2];
-		fetch('http://localhost:3150/api/books/' + bookID, {
-			method: 'GET',
+		fetch("http://localhost:3150/api/books/" + bookID, {
+			method: "GET",
 			headers: {
-				'Content-Type': 'application'
-			}
-		}).then(response => {
-			response.json().then(data => {
+				"Content-Type": "application",
+			},
+		}).then((response) => {
+			response.json().then((data) => {
 				const newBook: Book = {
 					title: data.title,
 					url: data.pathToBook,
 					author: data.author,
-					pages: data.totalPages
-				}
+					pages: data.totalPages,
+				};
 				setBook(newBook);
-			})
-		})
-	}, [])
+			});
+		});
+	}, []);
 	return (
 		<>
-			<div className="reader w-screen h-screen flex flex-col">
+			<div className="reader w-screen h-screen flex flex-col absolute top-0 left-0">
 				<header className="settingBar w-full h-12 bg-red-700  flex flex-row items-center justify-between relative">
-					<IoIosCloseCircleOutline className="text-white h-8 w-8 cursor-pointer ml-2 absolute" onClick={() =>{
-						window.location.replace("/books");
-					}}></IoIosCloseCircleOutline>
+					<IoIosCloseCircleOutline
+						className="text-white h-8 w-8 cursor-pointer ml-2 absolute"
+						onClick={() => {
+							window.location.replace("/books");
+						}}
+					></IoIosCloseCircleOutline>
 					<div className="bookTitle ml-14 text-white font-bold font-serif text-xl select-none">
 						{sampleBook.title}
 					</div>
@@ -271,7 +287,9 @@ const Reader: React.FC = () => {
 									<input
 										type="checkbox"
 										className="hidden peer"
-										onChange={(e) => changeTheme(e.target.checked)}
+										onChange={(e) =>
+											changeTheme(e.target.checked)
+										}
 									></input>
 									<div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-sky-500"></div>
 								</label>
@@ -283,9 +301,7 @@ const Reader: React.FC = () => {
 								name="font"
 								id="fontSelect"
 								className="optionSelect bg-gray-300 border border-gray-300 text-gray-900 text-sm rounded-lg focus:"
-								onChange={(e) =>
-									changeFont(e.target.value)
-								}
+								onChange={(e) => changeFont(e.target.value)}
 							>
 								<option value='"Source Serif 4", serif'>
 									Source Serif 4
@@ -297,7 +313,9 @@ const Reader: React.FC = () => {
 								<option value='"Playfair Display", serif'>
 									Playfair Display
 								</option>
-								<option value='"Poppins", sans-serif'>Poppins</option>
+								<option value='"Poppins", sans-serif'>
+									Poppins
+								</option>
 							</select>
 						</div>
 						<div className="settingOption flex flex-row w-full h-1/6 justify-between items-center">
@@ -335,7 +353,9 @@ const Reader: React.FC = () => {
 								<option value="100">Thin</option>
 								<option value="200">Extra Light</option>
 								<option value="300">Light</option>
-								<option selected value="400">Normal</option>
+								<option selected value="400">
+									Normal
+								</option>
 								<option value="500">Medium</option>
 								<option value="600">Semibold</option>
 								<option value="700">Bold</option>
@@ -354,7 +374,9 @@ const Reader: React.FC = () => {
 								}
 							>
 								<option value="20">20px</option>
-								<option selected value="25">25px</option>
+								<option selected value="25">
+									25px
+								</option>
 								<option value="30">30px</option>
 								<option value="35">35px</option>
 								<option value="40">40px</option>
