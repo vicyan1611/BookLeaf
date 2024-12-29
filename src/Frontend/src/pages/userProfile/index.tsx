@@ -1,4 +1,7 @@
 import bookLeafLogo from "../../assets/BookLeaf_Logo_cropped.svg"; // resize the logo to 20px
+import LineChart from '../../components/Charts/LineChart';
+import PieChart from '../../components/Charts/PieChart';
+
 import "./index.css";
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
@@ -94,7 +97,6 @@ function BooksSection() {
     <h2 className="text-lg font-bold mb-4">Currently Reading</h2>
     <div className="grid grid-cols-4 gap-4">
     <div className="col-span-3">
-
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 auto-rows-fr">
             {books && books.length > 0 ? (
               books.map((book) => <BookCard key={book._id} book={book} />)
@@ -103,7 +105,6 @@ function BooksSection() {
                 <p>No books found</p>
               </div>
             )}
-
           </div>
         </div>
       </div>
@@ -111,23 +112,29 @@ function BooksSection() {
   );
 };
 
+function GridItem({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col items-center justify-center p-4 border border-slate-200 rounded-lg">
+      {children}
+    </div>    
+  );
+}
+
 const AnalysisSection = () => (
   <div className="p-6">
-    <h2 className="text-lg font-bold mb-4">Reading Time Analytics</h2>
+    <h2 className="text-lg font-bold mb-4">Reading Analytics</h2>
     <div className="grid grid-cols-2 gap-6">
-      <div className="bg-white shadow rounded-lg p-6">
+      <div className="bg-white shadow rounded-lg p-3">
         <h3 className="text-sm font-medium mb-2">Reading Insights</h3>
-        {/* Replace with actual Pie Chart */}
-        <div className="h-40 bg-gray-100 rounded-lg flex justify-center items-center">
-          <p>Pie Chart Placeholder</p>
-        </div>
+          <GridItem>
+            <PieChart />
+          </GridItem>
       </div>
-      <div className="bg-white shadow rounded-lg p-6">
-        <h3 className="text-sm font-medium mb-2">Reading Time (Monthly)</h3>
-        {/* Replace with actual Line Chart */}
-        <div className="h-40 bg-gray-100 rounded-lg flex justify-center items-center">
-          <p>Line Chart Placeholder</p>
-        </div>
+      <div className="bg-white shadow rounded-lg p-3">
+        <h3 className="text-sm font-medium mb-2">Reading Time</h3>
+          <GridItem>
+            <LineChart />
+          </GridItem>
       </div>
     </div>
   </div>
