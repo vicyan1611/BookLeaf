@@ -1,7 +1,7 @@
 import { setupBooks } from './setupBooks'
 import { setupNormalUsers } from './setupNormalUsers'
-import { setupAdmins } from './setupAdmins'
+import { setupVerification } from './setupVerification'
 
 setupBooks()
 setupNormalUsers()
-setupAdmins()
+setupVerification()
