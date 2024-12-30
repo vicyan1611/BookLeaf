@@ -11,7 +11,7 @@ authorizationRouter.post("/reset-password/verify-OTP", authorizationController.O
 authorizationRouter.put("/reset-password", authorizationController.resetPassword);
 authorizationRouter.post("/verify", authorizationController.verify);
 authorizationRouter.post("/send-verification-mail", authorizationController.sendVerificationEmail);
-authorizationRouter.get("/verify-account", authorizationController.accountVerify);
+authorizationRouter.post("/verify-account", authorizationController.accountVerify);
 
 
 authorizationRouter.get("/test", verify, (req: Request, res: Response): void => {

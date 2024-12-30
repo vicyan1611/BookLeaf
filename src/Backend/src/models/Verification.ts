@@ -14,6 +14,7 @@ export const VerificationSchema = {
     OTP: {type: String, required: true},
     createDate: {type: String, required: true},
     expireDate: {type: String, required: true},
+    type: {type: String, required: true},
     used: {type: Boolean, required: true, default: false},
 }
 

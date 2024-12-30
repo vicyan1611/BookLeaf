@@ -3,6 +3,7 @@ import { useEffect, useState, useRef, forwardRef } from "react";
 import AccountPageLogo from "../../components/AccountPageLogo";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { checkPassword } from "../register";
 
 interface EmailInputProps {
 	setChangeOTP: React.Dispatch<React.SetStateAction<boolean>>;
@@ -14,11 +15,12 @@ interface PasswordInputProps {
 	changePassword: boolean;
 }
 
-interface OTPInputProps {
+export interface OTPInputProps {
 	email: string;
-	setChangePassword: React.Dispatch<React.SetStateAction<boolean>>;
-	changePassword: boolean;
-	changeOTP: boolean;
+	setChangePassword?: React.Dispatch<React.SetStateAction<boolean>>;
+	changePassword?: boolean;
+	changeOTP?: boolean;
+	link: string;
 }
 
 const EmailInput = forwardRef<HTMLInputElement, EmailInputProps>(
@@ -96,7 +98,7 @@ const EmailInput = forwardRef<HTMLInputElement, EmailInputProps>(
 	}
 );
 
-function OTPInput(props: OTPInputProps) {
+export function OTPInput(props: OTPInputProps) {
 	const [code, setCode] = useState("");
 	const formRef = useRef<HTMLFormElement>(null);
 	const OTPRefs = [
@@ -179,7 +181,7 @@ function OTPInput(props: OTPInputProps) {
 		e.preventDefault();
 		const toaster2 = toast.loading("Verifying OTP...");
 		axios
-			.post("http://localhost:3000/api/auth/reset-password/verify-OTP", {
+			.post(props.link, {
 				email: props.email,
 				code: code,
 			})
@@ -192,7 +194,9 @@ function OTPInput(props: OTPInputProps) {
 						isLoading: false,
 					});
 					setTimeout(() => {
-						props.setChangePassword(true);
+						if(props.setChangePassword){
+							props.setChangePassword(true);
+						}
 					}, 1000);
 				}
 			})
@@ -213,6 +217,9 @@ function OTPInput(props: OTPInputProps) {
 	useEffect(() => {
 		if (props.changePassword) {
 			formRef.current!.style.display = "none";
+		}
+		else if(!props.changeOTP && !props.changePassword && !props.setChangePassword){
+			formRef.current!.style.display = "flex";
 		}
 	}, [props]);
 	return (
@@ -320,8 +327,15 @@ const PasswordInput = (props: PasswordInputProps) => {
 	};
 	const handlePasswordChange = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		if (!checkPassword(passwordRef.current!.value)) {
+			toast.error(
+				"Password must contain at least 1 uppercase, 1 lowercase, 1 number and 1 special character, and must be at least 8 characters long"
+			);
+			return;
+		}
 		const password = passwordRef.current!.value;
 		const confirmPassword = confirmPasswordRef.current!.value;
+		const toaster = toast.loading("Changing password...");
 		if (checkConfirmPassword(password, confirmPassword)) {
 			axios
 				.put("http://localhost:3000/api/auth/reset-password", {
@@ -330,17 +344,32 @@ const PasswordInput = (props: PasswordInputProps) => {
 				})
 				.then((res) => {
 					if (res.status === 200) {
-						toast.success("Password changed successfully");
+						toast.update(toaster, {
+							render: "Password changed successfully",
+							type: "success",
+							autoClose: 2000,
+							isLoading: false,
+						});
 						setTimeout(() => {
 							navigate("/login");
 						}, 10000);
 					}
 				})
 				.catch((err) => {
-					toast.error(err.response.data.message);
+					toast.update(toaster, {
+						render: "Error occurred: " + err.response.data,
+						type: "error",
+						autoClose: 2000,
+						isLoading: false,
+					});
 				});
 		} else {
-			toast.error("Passwords do not match");
+			toast.update(toaster, {
+				render: "Passwords do not match",
+				type: "error",
+				autoClose: 2000,
+				isLoading: false,
+			});
 		}
 	};
 	useEffect(() => {
@@ -418,6 +447,7 @@ export default function ResetPass() {
 				setChangePassword={setChangePassword}
 				changePassword={changePassword}
 				changeOTP={changeOTP}
+				link={"http://localhost:3000/api/auth/reset-password/verify-OTP"}
 			/>
 			<PasswordInput changePassword={changePassword} email={email} />
 		</div>

@@ -129,6 +129,7 @@ const AuthorizationController: AuthorizationControllerType = {
 			OTP: code,
 			createDate: new Date().toISOString(),
 			expireDate: new Date(Date.now() + 1000 * 60 * 15).toISOString(), // 15 minutes
+			type: "reset-password",
 			used: false,
 		});
 		await verification.save();
@@ -138,11 +139,11 @@ const AuthorizationController: AuthorizationControllerType = {
 	OTPVerify: async (req: Request, res: Response) => {
 		const email = req.body.email;
 		const code = req.body.code;
-		console.log(email, code);
 		const verification = await Verification.findOne({
 			email: email,
 			OTP: code,
 			used: false,
+			type: "reset-password",
 			expireDate: { $gt: new Date().toISOString() },
 		});
 		if (!verification) {
@@ -161,16 +162,65 @@ const AuthorizationController: AuthorizationControllerType = {
 		res.status(200).send("Email verified");
 	},
 	accountVerify: async (req: Request, res: Response) => {
-		// TODO: Implement account verification logic
+		const code = req.body.code;
+		const email = req.body.email;
+		const verification = await Verification.findOne({
+			email: email,
+			OTP: code,
+			used: false,
+			type: "account-verification",
+			expireDate: { $gt: new Date().toISOString() },
+		});
+		if (!verification) {
+			res.status(400).send("Invalid code or code may have expired");
+			return;
+		}
+		verification.used = true;
+		await verification.save();
+		const associatedUser = await NormalUser.findOne({
+			email: email,
+		});
+		if (!associatedUser) {
+			res.status(404).send("User not found");
+			return;
+		}
+		associatedUser.verified = true;
+		await associatedUser.save();
+		res.status(200).send("Email verified");
 	},
 	sendVerificationEmail: async (req: Request, res: Response) => {
-		// TODO: Implement send verification email logic
+		const email = req.body.email;
+		const user = await NormalUser.findOne({email: email});
+		if (!user) {
+			res.status(404).send("User not found");
+			return;
+		}
+		else if(user.verified){
+			res.status(200).send("User already verified");
+			return;
+		}
+		const code = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit code
+		const verification: IVerification = new Verification({
+			email: email,
+			OTP: code,
+			createDate: new Date().toISOString(),
+			expireDate: new Date(Date.now() + 1000 * 60 * 15).toISOString(), // 15 minutes
+			type: "account-verification",
+			used: false,
+		});
+		await verification.save();
+		sendVerificationCode(email, code);
+		res.status(200).send("Email sent");
 	},
 	resetPassword: async (req: Request, res: Response) => {
 		const email = req.body.email;
 		const user = await NormalUser.findOne({email: email});
 		if (!user) {
 			res.status(404).send("User not found");
+			return;
+		}
+		else if(bcrypt.compareSync(req.body.password, user.password)){
+			res.status(400).send("New password cannot be the same as the old password");
 			return;
 		}
 		try{
@@ -216,7 +266,6 @@ const AuthorizationController: AuthorizationControllerType = {
 						}
 					} else if (refreshCookieToken) {
 						// Refresh token logic
-						console.log(refreshCookieToken);
 						const decoded = jwt.verify(
 							refreshCookieToken,
 							process.env.JWT_SECRET as Secret
