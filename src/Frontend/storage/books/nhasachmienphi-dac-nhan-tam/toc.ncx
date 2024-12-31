@@ -1,0 +1,279 @@
+<?xml version='1.0' encoding='utf-8'?>
+<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1" xml:lang="eng">
+  <head>
+    <meta content="abcc595c-581c-441f-a07c-0726653cd889" name="dtb:uid"/>
+    <meta content="3" name="dtb:depth"/>
+    <meta content="calibre (0.8.39)" name="dtb:generator"/>
+    <meta content="0" name="dtb:totalPageCount"/>
+    <meta content="0" name="dtb:maxPageNumber"/>
+  </head>
+  <docTitle>
+    <text>Đắc nhân tâm</text>
+  </docTitle>
+  <navMap>
+    <navPoint class="chapter" id="navPoint-1" playOrder="1">
+      <navLabel>
+        <text>Thông tin ebook</text>
+      </navLabel>
+      <content src="OEBPS/Text/Section0041.xhtml"/>
+    </navPoint>
+    <navPoint class="chapter" id="navPoint-2" playOrder="2">
+      <navLabel>
+        <text>Phần I Những thuật căn bản để dẫn đạo người</text>
+      </navLabel>
+      <content src="OEBPS/Text/Section0001.xhtml"/>
+      <navPoint class="chapter" id="navPoint-3" playOrder="3">
+        <navLabel>
+          <text>Chương Một - Muốn lấy mật đừng phá tổ ong</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0001.xhtml#heading_id_3"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-4" playOrder="4">
+        <navLabel>
+          <text>Chương Hai - Một bí quyết quan trọng trong phép xử thế</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0001.xhtml#heading_id_4"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-5" playOrder="5">
+        <navLabel>
+          <text>Chương ba Hãy khêu gợi ở người cái ý tự muốn làm công việc mà chính ta đề nghị với họ</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0002.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-6" playOrder="6">
+        <navLabel>
+          <text>Chương tư - Tám lời khuyên để giúp các bạn đọc sách này được nhiều lợi ích nhất</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0003.xhtml"/>
+      </navPoint>
+    </navPoint>
+    <navPoint class="chapter" id="navPoint-7" playOrder="7">
+      <navLabel>
+        <text>PHẦN II Sáu cách gây thiện cảm</text>
+      </navLabel>
+      <content src="OEBPS/Text/Section0005.xhtml"/>
+      <navPoint class="chapter" id="navPoint-8" playOrder="8">
+        <navLabel>
+          <text>Chương một - Để cho tới đâu cũng được tiếp đón niềm nở</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0005.xhtml#heading_id_3"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-9" playOrder="9">
+        <navLabel>
+          <text>Chương hai Một cách dễ dàng để gây mỹ cảm lúc sơ kiến</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0006.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-10" playOrder="10">
+        <navLabel>
+          <text>Chương ba Không theo quy tắc sau này tức là tự rước lấy thất bại</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0007.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-11" playOrder="11">
+        <navLabel>
+          <text>Chương bốn - Bạn muốn thành một người nói chuyện có duyên không? Dễ lắm</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0008.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-12" playOrder="12">
+        <navLabel>
+          <text>Chương Năm Làm sao để gây thiện cảm</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0009.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-13" playOrder="13">
+        <navLabel>
+          <text>Chương sáu - Làm sao cho người ta ưa mình liền</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0010.xhtml"/>
+      </navPoint>
+    </navPoint>
+    <navPoint class="chapter" id="navPoint-14" playOrder="14">
+      <navLabel>
+        <text>PHẦN III dẫn dụ người khác cho họ nghĩ như mình</text>
+      </navLabel>
+      <content src="OEBPS/Text/Section0011.xhtml"/>
+      <navPoint class="chapter" id="navPoint-15" playOrder="15">
+        <navLabel>
+          <text>Chương một - Trong một cuộc tranh biện không có người thắng kẻ bại</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0011.xhtml#heading_id_3"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-16" playOrder="16">
+        <navLabel>
+          <text>Chương 2 Một cách chắn chắn để gây thù oán. Tránh nó cách nào?</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0012.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-17" playOrder="17">
+        <navLabel>
+          <text>Chương Ba Quá tắc quy cung</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0013.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-18" playOrder="18">
+        <navLabel>
+          <text>Chương Bốn Do trái tim sẽ thắng được lý trí</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0014.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-19" playOrder="19">
+        <navLabel>
+          <text>Chương Năm Bí quyết của Socrate</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0015.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-20" playOrder="20">
+        <navLabel>
+          <text>Chương sáu Xả hơi</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0016.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-21" playOrder="21">
+        <navLabel>
+          <text>Chương bảy Thiện bất chuyên mỹ</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0017.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-22" playOrder="22">
+        <navLabel>
+          <text>chương tám Quy tắc này sẽ giúp bạn làm được những việc dị thường</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0018.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-23" playOrder="23">
+        <navLabel>
+          <text>Chương chín Loài người muốn gì?</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0019.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-24" playOrder="24">
+        <navLabel>
+          <text>Chương mười Gợi những tình cảm cao thượng</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0020.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-25" playOrder="25">
+        <navLabel>
+          <text>Chương Mười Một Kích thích thị giác và óc tưởng tượng của người</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0021.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-26" playOrder="26">
+        <navLabel>
+          <text>Chương Mười hai Khi mọi cách đều vô hiệu bạn hãy thử cách này xem sao</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0022.xhtml"/>
+      </navPoint>
+    </navPoint>
+    <navPoint class="chapter" id="navPoint-27" playOrder="27">
+      <navLabel>
+        <text>Phần IV sửa tính người mà không làm cho họ phật ý</text>
+      </navLabel>
+      <content src="OEBPS/Text/Section0023.xhtml"/>
+      <navPoint class="chapter" id="navPoint-28" playOrder="28">
+        <navLabel>
+          <text>Chương Một Nếu bạn bắt buộc phải chỉ trích, thì xin bạn bắt đầu như sau này</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0023.xhtml#heading_id_3"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-29" playOrder="29">
+        <navLabel>
+          <text>Chuong 2 Chỉ trích cách nào mà khỏi gây thù oán?</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0024.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-30" playOrder="30">
+        <navLabel>
+          <text>Chương Ba Hãy tự cáo lỗi trước đã</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0025.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-31" playOrder="31">
+        <navLabel>
+          <text>Chương Bốn Đừng ra lệnh</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0026.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-32" playOrder="32">
+        <navLabel>
+          <text>Chương Năm Giữ thể diện cho người</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0027.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-33" playOrder="33">
+        <navLabel>
+          <text>Chương Sáu Khích lệ người ta cách nào?</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0028.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-34" playOrder="34">
+        <navLabel>
+          <text>Chương Bảy Vị tri kỷ giả, dụng</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0029.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-35" playOrder="35">
+        <navLabel>
+          <text>Chương Tám Hãy khuyến khích người</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0030.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-36" playOrder="36">
+        <navLabel>
+          <text>Chương Chín Làm sao cho người ta vui sướng mà làm công việc bạn nhờ cậy</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0031.xhtml"/>
+      </navPoint>
+    </navPoint>
+    <navPoint class="chapter" id="navPoint-37" playOrder="37">
+      <navLabel>
+        <text>Phần V Phép nhiệm mầu</text>
+      </navLabel>
+      <content src="OEBPS/Text/Section0032.xhtml"/>
+      <navPoint class="chapter" id="navPoint-38" playOrder="38">
+        <navLabel>
+          <text>Chương Một Chôn sống hạnh phúc gia đình cách nào lẹ nhất?</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0033.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-39" playOrder="39">
+        <navLabel>
+          <text>Chương Hai Tùy Ngộ Nhi An</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0034.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-40" playOrder="40">
+        <navLabel>
+          <text>Chương Ba Thương nhau chín bỏ làm mười</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0035.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-41" playOrder="41">
+        <navLabel>
+          <text>Chương Bốn Làm cho người ở chung quanh mình được sung sướng là điều dễ dàng</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0036.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-42" playOrder="42">
+        <navLabel>
+          <text>Chương Năm Cái gì làm cảm động một người đàn bà</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0037.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-43" playOrder="43">
+        <navLabel>
+          <text>Chương Sáu Phu phụ tương kính như tân</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0038.xhtml"/>
+      </navPoint>
+      <navPoint class="chapter" id="navPoint-44" playOrder="44">
+        <navLabel>
+          <text>Chương bảy Những kẻ thất học trong hôn nhân</text>
+        </navLabel>
+        <content src="OEBPS/Text/Section0039.xhtml"/>
+      </navPoint>
+    </navPoint>
+  </navMap>
+</ncx>

@@ -1,7 +1,6 @@
 // BookController.ts
 import { Request, Response } from "express";
 import BookService from "../services/BookService";
-import { error } from "console";
 
 export const getAllBooks = async (req: Request, res: Response) => {
   try {
@@ -27,3 +26,20 @@ export const getBookByID = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to fetch book" });
   }
 };
+
+export const uploadBook = async (req: Request, res: Response) => {
+  try {
+    // Upload logic
+    const file = req.file;
+    const userID = req.user!._id;
+    if (!file) {
+      res.status(400).send("No file uploaded");
+      return;
+    }
+    await BookService.uploadBook(file, userID);
+    res.status(200).send("Book uploaded successfully");
+  } catch (error) {
+    console.error("Error uploading book:", error);
+    res.status(500).send("Internal Server Error");
+  }
+}
