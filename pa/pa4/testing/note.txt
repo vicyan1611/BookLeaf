@@ -1,0 +1,2 @@
+Mr Vu told us we do not need to write the test report in this PA.
+However, we did test some groups of functions (provide the results in the test cases)
