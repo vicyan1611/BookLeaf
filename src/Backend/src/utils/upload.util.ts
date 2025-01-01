@@ -20,5 +20,16 @@ const uploadSupabase = async (file: Array<Express.Multer.File>) => {
     return urls;
 }
 
-export { uploadSupabase };
+const uploadCoverImage = async (file: Base64URLString, fileTitle: string) => {
+    const buffer = decode(file);
+    const filename = `${fileTitle.replace(/\s/g, "")}` + "cover.jpg";
+    const { data, error } = await supabase.storage.from("cover_images").upload(filename, buffer);
+    if (error) {
+        throw error;
+    }
+    const {data: publicURL} = await supabase.storage.from("cover_images").getPublicUrl(filename);
+    return publicURL;
+};
+
+export { uploadSupabase, uploadCoverImage };
 export default upload;

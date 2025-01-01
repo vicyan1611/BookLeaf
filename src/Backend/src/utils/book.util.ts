@@ -2,7 +2,7 @@ import https from 'https';
 import url from 'url';
 import JSZip from 'jszip';
 import { XMLParser } from 'fast-xml-parser';
-import { resolve } from 'path';
+import { uploadCoverImage } from './upload.util';
 
 class Metadata{
     title?: string;
@@ -26,6 +26,7 @@ class Metadata{
     }
     static async getEPUBMetadata(filepath: string): Promise<Object>{
         let data: Buffer[] = [], dataLen = 0, container;
+        const bookName = filepath.split("/").pop();
         const fetchEPUB = async (filepath: string) => {
             return new Promise((resolve, reject) => {
                 https.get(url.parse(filepath), (res) => {
@@ -78,7 +79,6 @@ class Metadata{
             const opfData = await opfPath.async("text");
             const opf = parser.parse(opfData);
             const data = opf.package.metadata;
-            console.log("Metadata:", data);
             const metadata = {
                 title: data["dc:title"],
                 publisher: data["dc:publisher"],
@@ -87,7 +87,21 @@ class Metadata{
                 author: data["dc:creator"],
                 date: data["dc:date"],
                 subjects: data["dc:subject"],
-                coverImage: data.meta.find((meta: any) => meta.name === "cover")?.content + ".jpg"
+                coverImage: data.meta.find((meta: any) => meta.name === "cover")?.content
+            }
+            if(!metadata.coverImage.includes("jpg") && !metadata.coverImage.includes("jpeg") && !metadata.coverImage.includes("png")){
+                metadata.coverImage += ".jpg";
+            }
+            let coverPath: any;
+            zip.forEach((relativePath, file) => {
+                if(relativePath.includes('cover')){
+                    coverPath = file;
+                }
+            });
+            if(coverPath){
+                const cover = await coverPath.async("base64");
+                const coverImageURL = await uploadCoverImage(cover, bookName!);
+                metadata.coverImage = coverImageURL["publicUrl"];
             }
             return metadata;
         }
