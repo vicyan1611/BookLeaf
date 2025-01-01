@@ -7,6 +7,7 @@ import LoginPageAdmin from "./pages/admin-login";
 import UserProfile from "./pages/userProfile";
 import Register from "./pages/register";
 import ResetPass from "./pages/forgotPass";
+import Following from "./pages/following";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const router = createBrowserRouter([
@@ -40,12 +41,16 @@ const router = createBrowserRouter([
   },
   {
     path: "/register",
-    element: <Register/>,
+    element: <Register />,
   },
   {
     path: "/reset-password",
-    element: <ResetPass/>,
-  }
+    element: <ResetPass />,
+  },
+  {
+    path: "/following",
+    element: <Following />,
+  },
 ]);
 
 function App() {

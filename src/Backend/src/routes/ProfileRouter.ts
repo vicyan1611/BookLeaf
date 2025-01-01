@@ -4,4 +4,6 @@ const userRouter = Router();
 
 userRouter.get("/:ID", ProfileController.getProfile);
 
+userRouter.get("/", ProfileController.searchProfiles);
+
 export default userRouter;
