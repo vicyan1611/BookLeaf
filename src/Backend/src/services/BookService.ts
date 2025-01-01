@@ -62,6 +62,9 @@ const BookService: IBookService = {
 				totalPages: 0,
 				createdAt: metadata.date ? new Date(metadata.date) : new Date(),
 				language: metadata.language,
+				userID: userID,
+				totalReadingTime: 0,
+				lastOpened: null,
 			});
 			await book.save();
 			const userBook = new UserBook({
