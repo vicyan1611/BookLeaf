@@ -1,13 +1,14 @@
+import { user } from './../models/User';
 import { Request } from "express";
 import { Book } from "../models/Book";
 import { uploadSupabase } from "../utils/upload.util";
 import Metadata from "../utils/book.util";
-import { UserBook } from "../models/UserBook";
 import { ObjectId } from "mongoose";
 interface IBookService {
 	getAllBooks: () => Promise<any>;
 	getBookByID: (id: string) => Promise<any>;
 	uploadBook: (file: Express.Multer.File, userID: any) => Promise<any>;
+	getBookByUserID: (req: Request) => Promise<any>;
 }
 
 interface IMetadata{
@@ -65,14 +66,24 @@ const BookService: IBookService = {
 				lastOpened: null,
 			});
 			await book.save();
-			const userBook = new UserBook({
-				userId: userID,
-				bookId: book._id,
-				currentPage: 0,
-			})
-			await userBook.save();
 		} catch (error) {
 			console.error("Error uploading book:", error);
+			throw error;
+		}
+	},
+	getBookByUserID: async (req: Request) => {
+		try {
+			const userID = req.body.userID;
+			const userBooks = await Book.find({ userID: userID }).select(
+				"title author totalPages pathToCover"
+			);
+			userBooks.forEach((book) => {
+				book.author = (book.author as any)["#text"];
+			});
+			return userBooks;
+		}
+		catch (error) {
+			console.error("Error fetching user books:", error);
 			throw error;
 		}
 	},

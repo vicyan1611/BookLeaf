@@ -32,6 +32,10 @@ const Sidebar = ({
 	if (!isActiveUser) {
 		menuItems.pop();
 	}
+	else{
+		menuItems.shift();
+		menuItems.shift();
+	}
 	return (
 		<div className="flex flex-col items-center w-16 bg-white shadow-lg h-full py-6">
 			{menuItems.map((item) => (
@@ -62,9 +66,18 @@ interface Book {
 	pathToCover: string;
 }
 
-const fetchBooks = async (): Promise<Book[]> => {
+const fetchBooks = async (userID: string): Promise<Book[]> => {
 	try {
-		const response = await fetch("http://localhost:3000/api/books");
+		const response = await fetch("http://localhost:3000/api/books/getUserBooks", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				userID: userID,
+			}),
+			credentials: "include",
+		});
 		if (!response.ok) {
 			throw new Error("Failed to fetch books");
 		}
@@ -100,9 +113,10 @@ function BooksSection() {
 	const [books, setBooks] = useState<Book[]>([]);
 
 	useEffect(() => {
+		const userID = window.location.pathname.split("/")[2];
 		const loadBooks = async () => {
 			try {
-				const fetchedBooks = await fetchBooks();
+				const fetchedBooks = await fetchBooks(userID);
 				setBooks(fetchedBooks);
 			} catch (err) {
 				console.error("Error loading books:", err);
@@ -329,6 +343,11 @@ interface UserProfileProps {
 
 const UserProfile = (props: UserProfileProps) => {
 	const [active, setActive] = useState("books");
+	useEffect(() => {
+		if (props.isActiveUser) {
+			setActive("info");
+		}
+	}, [props.isActiveUser]);
 	const handleFollow = async () => {
 		// follow the user
 		if(!props.isFollowing){
