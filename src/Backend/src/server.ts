@@ -37,10 +37,6 @@ app.get("/health", (req: Request, res: Response) => {
   res.json({ status: "OK", timestamp: new Date().toISOString() });
 });
 
-app.get("/api/books/:bookID", getBookByID);
-
-// Simple books route
-app.get("/api/books", getAllBooks);
 
 app.post('/login', UserController.post);
 

@@ -1,21 +1,30 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-interface IBook extends Document {
+export interface IBook extends Document {
   title: string;
-  author: string;
+  author: Object;
   totalPages: number;
   description: string;
   pathToBook: string;
   pathToCover: string;
+  subjects: string[];
+  language: string;
+  publisher: string;
+  createdAt: Date;
 }
 
 const BookSchema = new Schema<IBook>({
   title: { type: String, required: true },
-  author: { type: String, required: true },
-  totalPages: { type: Number, required: true },
-  description: { type: String },
+  author: { type: Object, required: false },
+  totalPages: { type: Number, required: false },
+  description: { type: String, required: false },
   pathToBook: { type: String, required: true },
-  pathToCover: { type: String, required: true },
+  pathToCover: { type: String, required: false },
+  subjects: { type: [String], required: false },
+  language: { type: String, required: false },
+  publisher: { type: String, required: false },
+  createdAt: { type: Date, default: Date.now },
 });
+// Still haven't found a way to read author and total page metadata
 
 export const Book = mongoose.model<IBook>("Book", BookSchema);
