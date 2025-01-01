@@ -159,6 +159,9 @@ const AddBook = () => {
 						autoClose: 2000,
 						isLoading: false,
 					});
+					setTimeout(() => {
+						window.location.reload();
+					}, 2000);
 				} else {
 					console.error("Failed to upload file");
 					toast.update(toaster, {
@@ -247,7 +250,7 @@ function Books() {
 				</div>
 			</div>
 			<SearchBar />
-			<div className=" grid grid-cols-4 mt-6 gap-1">
+			<div className="grid grid-cols-4 mt-6 gap-1">
 				<div className=" col-start-1 col-span-1">
 					<SideBar />
 				</div>
