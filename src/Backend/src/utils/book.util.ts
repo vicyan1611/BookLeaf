@@ -78,7 +78,6 @@ class Metadata{
             const opfData = await opfPath.async("text");
             const opf = parser.parse(opfData);
             const data = opf.package.metadata;
-            console.log("Metadata:", data);
             const metadata = {
                 title: data["dc:title"],
                 publisher: data["dc:publisher"],
