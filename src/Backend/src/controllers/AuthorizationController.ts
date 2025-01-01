@@ -10,6 +10,7 @@ interface AuthorizationController {
 	accountVerify: (req: Request, res: Response) => Promise<void>;
 	sendVerificationEmail: (req: Request, res: Response) => Promise<void>;
 	resetPassword: (req: Request, res: Response) => Promise<void>;
+	logout: (req: Request, res: Response) => Promise<void>;
 }
 
 const AuthorizationController: AuthorizationController = {
@@ -74,6 +75,14 @@ const AuthorizationController: AuthorizationController = {
 			res.status(500).json({ error: "Failed to reset password" });
 		}
 	},
+
+	logout: async (req: Request, res: Response) => {
+		try {
+			await AuthService.logout(req, res);
+		} catch (error) {
+			res.status(500).json({ error: "Failed to logout" });
+		}
+	}
 };
 
 export default AuthorizationController;

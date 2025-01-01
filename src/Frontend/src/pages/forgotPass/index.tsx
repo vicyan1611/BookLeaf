@@ -21,6 +21,7 @@ export interface OTPInputProps {
 	changePassword?: boolean;
 	changeOTP?: boolean;
 	link: string;
+	setVerify?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const EmailInput = forwardRef<HTMLInputElement, EmailInputProps>(
@@ -196,6 +197,9 @@ export function OTPInput(props: OTPInputProps) {
 					setTimeout(() => {
 						if(props.setChangePassword){
 							props.setChangePassword(true);
+						}
+						if(props.setVerify){
+							props.setVerify(true);
 						}
 					}, 1000);
 				}

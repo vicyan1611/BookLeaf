@@ -1,12 +1,13 @@
 import bookLeafLogo from "../../assets/BookLeaf_Logo_cropped.svg"; // resize the logo to 20px
-import LineChart from '../../components/Charts/LineChart';
-import PieChart from '../../components/Charts/PieChart';
+import LineChart from "../../components/Charts/LineChart";
+import PieChart from "../../components/Charts/PieChart";
 
 import "./index.css";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaCog, FaChartPie, FaBook } from "react-icons/fa";
 import { IoPersonCircleOutline } from "react-icons/io5";
+import { toast } from "react-toastify";
 
 const Sidebar = ({
 	active,
@@ -106,52 +107,54 @@ function BooksSection() {
 		loadBooks();
 	}, []);
 
-  return (
-  <div className="p-6">
-    <h2 className="text-lg font-bold mb-4">Currently Reading</h2>
-    <div className="grid grid-cols-4 gap-4">
-    <div className="col-span-3">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 auto-rows-fr">
-            {books && books.length > 0 ? (
-              books.map((book) => <BookCard key={book._id} book={book} />)
-            ) : (
-              <div className="flex justify-center items-center h-48 col-span-3">
-                <p>No books found</p>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+	return (
+		<div className="p-6">
+			<h2 className="text-lg font-bold mb-4">Currently Reading</h2>
+			<div className="grid grid-cols-4 gap-4">
+				<div className="col-span-3">
+					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 auto-rows-fr">
+						{books && books.length > 0 ? (
+							books.map((book) => (
+								<BookCard key={book._id} book={book} />
+							))
+						) : (
+							<div className="flex justify-center items-center h-48 col-span-3">
+								<p>No books found</p>
+							</div>
+						)}
+					</div>
+				</div>
+			</div>
+		</div>
+	);
+}
 
 function GridItem({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex flex-col items-center justify-center p-4 border border-slate-200 rounded-lg">
-      {children}
-    </div>    
-  );
+	return (
+		<div className="flex flex-col items-center justify-center p-4 border border-slate-200 rounded-lg">
+			{children}
+		</div>
+	);
 }
 
 const AnalysisSection = () => (
-  <div className="p-6">
-    <h2 className="text-lg font-bold mb-4">Reading Analytics</h2>
-    <div className="grid grid-cols-2 gap-6">
-      <div className="bg-white shadow rounded-lg p-3">
-        <h3 className="text-sm font-medium mb-2">Reading Insights</h3>
-          <GridItem>
-            <PieChart />
-          </GridItem>
-      </div>
-      <div className="bg-white shadow rounded-lg p-3">
-        <h3 className="text-sm font-medium mb-2">Reading Time</h3>
-          <GridItem>
-            <LineChart />
-          </GridItem>
-      </div>
-    </div>
-  </div>
+	<div className="p-6">
+		<h2 className="text-lg font-bold mb-4">Reading Analytics</h2>
+		<div className="grid grid-cols-2 gap-6">
+			<div className="bg-white shadow rounded-lg p-3">
+				<h3 className="text-sm font-medium mb-2">Reading Insights</h3>
+				<GridItem>
+					<PieChart />
+				</GridItem>
+			</div>
+			<div className="bg-white shadow rounded-lg p-3">
+				<h3 className="text-sm font-medium mb-2">Reading Time</h3>
+				<GridItem>
+					<LineChart />
+				</GridItem>
+			</div>
+		</div>
+	</div>
 );
 
 const PersonalInfoSection = () => (
@@ -171,23 +174,57 @@ const PersonalInfoSection = () => (
 	</div>
 );
 
-const AccountManagementSection = () => (
-	<div className="p-6">
-		<h2 className="text-lg font-bold mb-4">Account Management</h2>
-		<div className="bg-white p-4 shadow rounded-lg">
-			<Link to="/" className="block w-full text-left text-red-600">
-				Logout
-			</Link>
-			<button className="block w-full text-left mt-2">
-				Change Password
-			</button>
-		</div>
-	</div>
-);
+interface AccountManagementSectionProps {
+	isActiveUser: boolean;
+}
 
-const UserProfile = () => {
+const AccountManagementSection = (props: AccountManagementSectionProps) => {
+	const handleLogout = () => {
+		// delete the access token and refresh token
+		fetch("http://localhost:3000/api/auth/logout", {
+			method: "POST",
+			credentials: "include",
+		}).then(() => {
+			toast.success("Logged out successfully");
+			setTimeout(() => { window.location.href = "/login"; }, 2000);
+		}).catch(err => {
+			console.error("Failed to logout:", err);
+			toast.error("Failed to logout");
+		});
+	}
+	return (
+		<>
+			{props.isActiveUser && (
+				<div className="p-6">
+					<h2 className="text-lg font-bold mb-4">Account Management</h2>
+					<div className="bg-white p-4 shadow rounded-lg">
+						<button onClick={handleLogout} className="block w-full text-left text-red-600">
+							Logout
+						</button>
+						<button className="block w-full text-left mt-2">
+							Change Password
+						</button>
+					</div>
+				</div>
+			)}
+		</>
+	);
+};
+
+interface User {
+	id: string;
+	username: string;
+	email: string;
+}
+
+interface UserProfileProps {
+	activeUser: User;
+	viewingUser: User;
+	isActiveUser: boolean;
+}
+
+const UserProfile = (props: UserProfileProps) => {
 	const [active, setActive] = useState("books");
-
 	return (
 		<div className="flex h-screen mx-auto my-0">
 			<Sidebar active={active} setActive={setActive} />
@@ -196,22 +233,30 @@ const UserProfile = () => {
 					<div className="flex items-center gap-4">
 						<div className="w-12 h-12 bg-gray-300 rounded-full"></div>
 						<div>
-							<h1 className="text-lg font-bold">Alexa Rawles</h1>
+							<h1 className="text-lg font-bold">
+								{props.viewingUser.username}
+							</h1>
 							<p className="text-sm text-gray-600">
-								alexarawles@gmail.com
+								{props.viewingUser.email}
 							</p>
 						</div>
 					</div>
-					{/*       <div className="flex gap-2">
-            <button className="bg-green-500 text-white px-4 py-2 rounded">Add Friend</button>
-            <button className="bg-red-500 text-white px-4 py-2 rounded">Block</button>
-          </div> */}
+					{(!props.isActiveUser) ? (
+					<div className="flex gap-2">
+						<button className="bg-green-500 text-white px-4 py-2 rounded">
+							Add Friend
+						</button>
+						<button className="bg-red-500 text-white px-4 py-2 rounded">
+							Block
+						</button>
+					</div>
+					) : null}
 				</header>
 				<main>
 					{active === "books" && <BooksSection />}
 					{active === "analysis" && <AnalysisSection />}
 					{active === "info" && <PersonalInfoSection />}
-					{active === "account" && <AccountManagementSection />}
+					{active === "account" && <AccountManagementSection isActiveUser={props.isActiveUser}/>}
 				</main>
 			</div>
 		</div>
@@ -220,16 +265,34 @@ const UserProfile = () => {
 
 const UserProfilePage = () => {
 	const navigate = useNavigate();
+	const [activeUser, setActiveUser] = useState<User>({} as User);
+	const [viewingUser, setViewingUser] = useState<User>({} as User);
+	const [isActiveUser, setIsActiveUser] = useState(false);
+
 	useEffect(() => {
 		fetch("http://localhost:3000/api/auth/verify", {
 			method: "POST",
 			credentials: "include",
-		}).then((res) => {
+		})
+		.then((res) => {
 			if (res.status !== 200) {
 				navigate("/login");
 			}
+		})
+		const viewingUserID = window.location.pathname.split("/")[2]; // https://localhost:5173/user-profile/:id
+		fetch(`http://localhost:3000/api/user-profile/${viewingUserID}`,{
+			method: "GET",
+			credentials: "include",
+		}).then(res => res.json()).then(data => {
+			setViewingUser(data.viewing);
+			setActiveUser(data.active);
+			setIsActiveUser(data.active._id === data.viewing._id);
+		}).catch(err => {
+			console.error("Failed to fetch user profile:", err);
+			toast.error("Failed to fetch user profile");
 		});
 	}, []);
+
 	return (
 		<div className="w-[1420px] mx-auto">
 			<div className="flex flex-col h-full">
@@ -260,7 +323,7 @@ const UserProfilePage = () => {
 					</div>
 				</header>
 				<main className="flex-grow overflow-y-auto">
-					<UserProfile />
+					<UserProfile activeUser={activeUser} viewingUser={viewingUser} isActiveUser={isActiveUser} />
 				</main>
 			</div>
 		</div>

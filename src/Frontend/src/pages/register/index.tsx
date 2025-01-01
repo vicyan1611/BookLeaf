@@ -20,6 +20,7 @@ export default function Register(props: any) {
 	const navigate = useNavigate();
 	const [registered, setRegistered] = useState(false);
 	const [email, setEmail] = useState("");
+	const [verify, setVerify] = useState(false);
 	const emailRef = useRef(null);
 	useEffect(() => {
 		axios
@@ -108,6 +109,11 @@ export default function Register(props: any) {
 			sendVerificationEmail();
 		}
 	}, [registered]);
+	useEffect(() => {
+		if (verify) {
+			navigate("/login");
+		}
+	}, [verify]);
 	return (
 		<>
 			{registered && (
@@ -163,6 +169,7 @@ export default function Register(props: any) {
 					<OTPInput 
 					email={email}
 					link={"http://localhost:3000/api/auth/verify-account"}
+					setVerify={setVerify}
 					/>
 				)}
 			</div>

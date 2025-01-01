@@ -1,4 +1,3 @@
-import { adder } from "./../models/MetadataHandler/MetaAdder";
 import { Request, Response } from "express";
 import { INormalUser, NormalUser } from "../models/NormalUser";
 import { IVerification, Verification } from "../models/Verification";
@@ -18,6 +17,7 @@ interface IAuthenticationService {
 	sendVerificationEmail: (req: Request, res: Response) => Promise<void>;
 	resetPassword: (req: Request, res: Response) => Promise<void>;
 	verify: (req: Request, res: Response) => Promise<void>;
+	logout: (req: Request, res: Response) => Promise<void>;
 }
 
 interface RegisterData {
@@ -264,7 +264,13 @@ const AuthService: IAuthenticationService = {
 						}
 						const user = await NormalUser.findById(decoded.user.id);
 						if (user) {
-							res.status(200).send("User verified");
+							res.status(200).json({
+								user:{
+									id: user._id,
+									username: user.username,
+									email: user.email,
+								}
+							})
 							return;
 						} else {
 							res.clearCookie("accessToken");
@@ -313,6 +319,11 @@ const AuthService: IAuthenticationService = {
 			}
 		}
 	},
+	logout: async (req: Request, res: Response) => {
+		res.clearCookie("accessToken");
+		res.clearCookie("refreshToken");
+		res.status(200).send("Logged out successfully");
+	}
 };
 
 export default AuthService;

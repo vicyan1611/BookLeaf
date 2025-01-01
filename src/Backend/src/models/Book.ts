@@ -11,6 +11,9 @@ export interface IBook extends Document {
   language: string;
   publisher: string;
   createdAt: Date;
+  userID: string;
+  totalReadingTime: number; // in minutes
+  lastOpened: Date;
 }
 
 const BookSchema = new Schema<IBook>({
@@ -24,6 +27,9 @@ const BookSchema = new Schema<IBook>({
   language: { type: String, required: false },
   publisher: { type: String, required: false },
   createdAt: { type: Date, default: Date.now },
+  userID: { type: String, required: true },
+  totalReadingTime: { type: Number, required: false },
+  lastOpened: { type: Date, required: false },
 });
 // Still haven't found a way to read author and total page metadata
 

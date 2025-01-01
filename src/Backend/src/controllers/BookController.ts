@@ -14,9 +14,7 @@ export const getAllBooks = async (req: Request, res: Response) => {
 export const getBookByID = async (req: Request, res: Response) => {
   try{
     const id = req.params.bookID;
-    console.log("ID:", id);
     const book = await BookService.getBookByID(id);
-    console.log("Book:", book);
     if (!book) {
       res.status(404).json({ error: "Book not found" });
     }

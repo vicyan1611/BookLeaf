@@ -2,7 +2,6 @@ import express, { Express, Request, Response } from "express";
 require("dotenv").config();
 import cors from "cors";
 import { connectMongoDB } from "./config/config";
-import { getAllBooks, getBookByID } from "./controllers/BookController";
 import { UserController } from './controllers/UserController'
 import apiRouter from "./routes/APIRouter";
 import cookieParser from 'cookie-parser';
@@ -36,9 +35,6 @@ app.get("/", (req: Request, res: Response) => {
 app.get("/health", (req: Request, res: Response) => {
   res.json({ status: "OK", timestamp: new Date().toISOString() });
 });
-
-
-app.post('/login', UserController.post);
 
 // API Router
 app.use('/api', apiRouter);

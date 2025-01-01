@@ -216,7 +216,7 @@ function Books() {
 			if (res.status !== 200) {
 				navigate("/login");
 			}
-		});
+		})
 	});
 	useEffect(() => {
 		const loadBooks = async () => {
