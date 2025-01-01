@@ -2,7 +2,6 @@ import express, { Express, Request, Response } from "express";
 require("dotenv").config();
 import cors from "cors";
 import { connectMongoDB } from "./config/config";
-import { UserController } from './controllers/UserController'
 import apiRouter from "./routes/APIRouter";
 import cookieParser from 'cookie-parser';
 

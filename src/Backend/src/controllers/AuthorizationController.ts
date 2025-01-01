@@ -11,6 +11,7 @@ interface AuthorizationController {
 	sendVerificationEmail: (req: Request, res: Response) => Promise<void>;
 	resetPassword: (req: Request, res: Response) => Promise<void>;
 	logout: (req: Request, res: Response) => Promise<void>;
+	changePassword: (req: Request, res: Response) => Promise<void>;
 }
 
 const AuthorizationController: AuthorizationController = {
@@ -81,6 +82,14 @@ const AuthorizationController: AuthorizationController = {
 			await AuthService.logout(req, res);
 		} catch (error) {
 			res.status(500).json({ error: "Failed to logout" });
+		}
+	},
+
+	changePassword: async (req: Request, res: Response) => {
+		try {
+			await AuthService.changePassword(req, res);
+		} catch (error) {
+			res.status(500).json({ error: "Failed to change password" });
 		}
 	}
 };
