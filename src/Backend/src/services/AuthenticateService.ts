@@ -18,6 +18,7 @@ interface IAuthenticationService {
 	resetPassword: (req: Request, res: Response) => Promise<void>;
 	verify: (req: Request, res: Response) => Promise<void>;
 	logout: (req: Request, res: Response) => Promise<void>;
+	changePassword: (req: Request, res: Response) => Promise<void>;
 }
 
 interface RegisterData {
@@ -323,7 +324,36 @@ const AuthService: IAuthenticationService = {
 		res.clearCookie("accessToken");
 		res.clearCookie("refreshToken");
 		res.status(200).send("Logged out successfully");
-	}
+	},
+	changePassword: async (req: Request, res: Response) => {
+		const oldPassword = req.body.oldPassword;
+		const newPassword = req.body.newPassword;
+		try{
+			const user = await NormalUser.findById(req.user!.id);
+			if (!user) {
+				res.status(404).send("User not found");
+				return;
+			}
+			if (!bcrypt.compareSync(oldPassword, user.password)) {
+				res.status(401).send("Wrong password");
+				return;
+			}
+			if (bcrypt.compareSync(newPassword, user.password)) {
+				res.status(400).send(
+					"New password cannot be the same as the old password"
+				);
+				return;
+			}
+			const salt = bcrypt.genSaltSync(saltRounds);
+			const hash = bcrypt.hashSync(newPassword, salt);
+			user.password = hash;
+			await user.save();
+			res.status(200).send("Password changed successfully");
+		} catch (error) {
+			console.log(error);
+			res.status(500).send("Internal Server Error");
+		}
+	},
 };
 
 export default AuthService;

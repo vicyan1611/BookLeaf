@@ -41,3 +41,12 @@ export const uploadBook = async (req: Request, res: Response) => {
     res.status(500).send("Internal Server Error");
   }
 }
+
+export const getBookByUserID = async (req: Request, res: Response) => {
+  try {
+    const userBooks = await BookService.getBookByUserID(req);
+    res.status(200).json(userBooks);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch user books" });
+  }
+};
