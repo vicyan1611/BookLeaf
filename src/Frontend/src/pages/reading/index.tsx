@@ -199,17 +199,18 @@ const Reader: React.FC = () => {
 	}, []);
 	useEffect(() => {
 		const bookID = window.location.pathname.split("/")[2];
-		fetch("http://localhost:3150/api/books/" + bookID, {
+		fetch("http://localhost:3000/api/books/" + bookID, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application",
 			},
+			credentials: "include",
 		}).then((response) => {
 			response.json().then((data) => {
 				const newBook: Book = {
 					title: data.title,
 					url: data.pathToBook,
-					author: data.author,
+					author: data.author["#text"],
 					pages: data.totalPages,
 				};
 				setBook(newBook);
@@ -227,7 +228,7 @@ const Reader: React.FC = () => {
 						}}
 					></IoIosCloseCircleOutline>
 					<div className="bookTitle ml-14 text-white font-bold font-serif text-xl select-none">
-						{sampleBook.title}
+						{book.title}
 					</div>
 					<div
 						ref={settingRef}

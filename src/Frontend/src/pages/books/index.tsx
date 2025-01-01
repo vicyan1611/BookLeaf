@@ -182,7 +182,7 @@ const AddBook = () => {
 	}
 	return (
 		<>
-			<div className="IconContainer absolute cursor-pointer bottom-10 right-10">
+			<div className="IconContainer fixed cursor-pointer bottom-10 right-10">
 				<input
 					type="file"
 					name="readingFile"
