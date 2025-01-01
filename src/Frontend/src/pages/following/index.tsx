@@ -1,9 +1,9 @@
-import MainPageLogo from "../../assets/BookLeaf_Logo_cropped.svg";
 import { IoSearchOutline } from "react-icons/io5";
 import { LuUsers2 } from "react-icons/lu";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import NavBar from "../../components/NavBar";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -58,7 +58,7 @@ interface User {
 const fetchUsers = async (query: string = ""): Promise<User[]> => {
   try {
     const response = await axios.get<{ users: User[] }>(
-      `http://localhost:3000/api/user-profile?search=${query}`, // Assuming your API returns { users: [...] }
+      `http://localhost:3000/api/user-profile?search=${query}`,
       {
         withCredentials: true,
       }
@@ -188,23 +188,7 @@ const Following: React.FC = () => {
 
   return (
     <div className="w-full p-10 h-full">
-      <div className="flex justify-between mb-6 w-full h-12">
-        <img src={MainPageLogo} alt="" />
-        <div className="flex gap-3">
-          <button className="font-semibold hover:bg-green-500 hover:text-white py-2 px-3 rounded">
-            Books
-          </button>
-          <button className="font-semibold hover:bg-green-500 hover:text-white py-2 px-3 rounded">
-            My Libraries
-          </button>
-          <button className="font-semibold hover:bg-green-500 hover:text-white py-2 px-3 rounded">
-            Goals
-          </button>
-          <button className="font-semibold hover:bg-green-500 hover:text-white py-2 px-3 rounded">
-            Following
-          </button>
-        </div>
-      </div>
+      <NavBar />
       <SearchBar onSearch={handleSearch} />
       <div className="grid grid-cols-4 mt-6 gap-4">
         <div className="col-start-1 col-span-1">
@@ -213,7 +197,6 @@ const Following: React.FC = () => {
         <div className="col-span-3">
           {isLoading ? (
             <div className="flex justify-center items-center h-48 col-span-3">
-              {/* You can use a loading spinner here */}
               <p>Loading...</p>
             </div>
           ) : (
