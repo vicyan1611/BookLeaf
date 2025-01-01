@@ -4,6 +4,7 @@ import { NormalUser } from "../models/NormalUser";
 interface ProfileController {
   getProfile: (req: Request, res: Response) => Promise<void>;
   searchProfiles: (req: Request, res: Response) => Promise<void>;
+  getMyProfileID: (req: Request, res: Response) => Promise<void>;
 }
 
 const ProfileController = {
@@ -51,6 +52,15 @@ const ProfileController = {
     } catch (error) {
       console.error("Error searching users:", error);
       res.status(500).json({ error: "Failed to search users" });
+    }
+  },
+  getMyProfileID: (req: Request, res: Response) => {
+    console.log("Fetching my profile ID");
+    try {
+      console.log(req.user!._id as string);
+      res.status(200).json({ id: req.user!._id });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch profile" });
     }
   },
 };
