@@ -13,6 +13,7 @@ authorizationRouter.post("/verify", AuthorizationController.verify);
 authorizationRouter.post("/send-verification-mail", AuthorizationController.sendVerificationEmail);
 authorizationRouter.post("/verify-account", AuthorizationController.accountVerify);
 authorizationRouter.post("/logout", AuthorizationController.logout);
+authorizationRouter.post("/change-password", verify, AuthorizationController.changePassword); // change made after user is logged in so need to verify token
 
 authorizationRouter.get("/test", verify, (req: Request, res: Response): void => {
     res.send("Hello World");

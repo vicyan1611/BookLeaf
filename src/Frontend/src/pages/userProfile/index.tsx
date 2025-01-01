@@ -3,18 +3,21 @@ import LineChart from "../../components/Charts/LineChart";
 import PieChart from "../../components/Charts/PieChart";
 
 import "./index.css";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaCog, FaChartPie, FaBook } from "react-icons/fa";
 import { IoPersonCircleOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
+import { checkPassword } from "../register";
 
 const Sidebar = ({
 	active,
 	setActive,
+	isActiveUser,
 }: {
 	active: string;
-	setActive: Function;
+	setActive: React.Dispatch<React.SetStateAction<string>>;
+	isActiveUser: boolean;
 }) => {
 	const menuItems = [
 		{ icon: <FaBook size={24} />, label: "Books", id: "books" },
@@ -26,7 +29,9 @@ const Sidebar = ({
 		},
 		{ icon: <FaCog size={24} />, label: "Account", id: "account" },
 	];
-
+	if (!isActiveUser) {
+		menuItems.pop();
+	}
 	return (
 		<div className="flex flex-col items-center w-16 bg-white shadow-lg h-full py-6">
 			{menuItems.map((item) => (
@@ -179,6 +184,11 @@ interface AccountManagementSectionProps {
 }
 
 const AccountManagementSection = (props: AccountManagementSectionProps) => {
+	const oldPassRef = React.useRef<HTMLInputElement>(null);
+	const newPassRef = React.useRef<HTMLInputElement>(null);
+	const confirmPassRef = React.useRef<HTMLInputElement>(null);
+	const submitRef = React.useRef<HTMLButtonElement>(null);
+	const [changePassword, setChangePassword] = useState(false);
 	const handleLogout = () => {
 		// delete the access token and refresh token
 		fetch("http://localhost:3000/api/auth/logout", {
@@ -192,6 +202,80 @@ const AccountManagementSection = (props: AccountManagementSectionProps) => {
 			toast.error("Failed to logout");
 		});
 	}
+	const toggleChangePassword = () => {
+		setChangePassword(!changePassword);
+	};
+	const handlePasswordChange = (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		submitRef.current!.disabled = true;
+		// check if new password and confirm password match
+		if(newPassRef.current!.value !== confirmPassRef.current!.value){
+			toast.error("Passwords do not match");
+			submitRef.current!.disabled = false;
+			return;
+		}
+		if(!checkPassword(newPassRef.current!.value)){
+			toast.error("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character");
+			submitRef.current!.disabled = false;
+			return;
+		}
+		const toaster = toast.loading("Changing password...");
+		const oldPass = oldPassRef.current!.value;
+		const newPass = newPassRef.current!.value;
+		fetch("http://localhost:3000/api/auth/change-password", {
+			method: "POST",
+			credentials: "include",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({
+				oldPassword: oldPass,
+				newPassword: newPass
+			}),
+		}).then((res) => {
+			if (res.status === 200) {
+				toast.update(toaster, {
+					render: "Password changed successfully",
+					type: "success",
+					isLoading: false,
+					autoClose: 3000
+				});
+			}
+			else if (res.status === 401) {
+				toast.update(toaster, {
+					render: "Old password is incorrect",
+					type: "error",
+					isLoading: false,
+					autoClose: 3000
+				});
+			}
+			else if (res.status === 500) {
+				toast.update(toaster, {
+					render: "Failed to change password",
+					type: "error",
+					isLoading: false,
+					autoClose: 3000
+				});
+			}
+			else if(res.status === 400){
+				toast.update(toaster, {
+					render: "New password must be different from old password",
+					type: "error",
+					isLoading: false,
+					autoClose: 3000
+				});
+			}
+		}).catch(err => {
+			console.error("Failed to change password:", err);
+			toast.update(toaster, {
+				render: "Failed to change password",
+				type: "error",
+				isLoading: false,
+				autoClose: 3000
+			});
+		});
+		submitRef.current!.disabled = false;
+	};
 	return (
 		<>
 			{props.isActiveUser && (
@@ -201,10 +285,28 @@ const AccountManagementSection = (props: AccountManagementSectionProps) => {
 						<button onClick={handleLogout} className="block w-full text-left text-red-600">
 							Logout
 						</button>
-						<button className="block w-full text-left mt-2">
+						<button onClick={toggleChangePassword} className="block w-full text-left mt-2">
 							Change Password
 						</button>
 					</div>
+					{changePassword && (
+					<div className="bg-white p-4 shadow rounded-lg">
+						<form onSubmit={handlePasswordChange}>
+							<label htmlFor="oldPass">Enter old password</label>
+							<br/>
+							<input ref={oldPassRef} name="oldPass" type="password" className="w-1/3 px-2 py-2 rounded-lg border-2 focus:outline-none"/>
+							<br/>
+							<label htmlFor="newPass">Enter new password</label>
+							<br/>
+							<input ref={newPassRef} name="newPass" type="password" className="w-1/3 px-2 py-2 rounded-lg border-2 focus:outline-none"/>
+							<br/>
+							<label htmlFor="confirmPass">Confirm new password</label>
+							<br/>
+							<input ref={confirmPassRef} name="confirmPass" type="password" className="w-1/3 px-2 py-2 rounded-lg border-2 focus:outline-none"/>
+							<br/>
+							<button ref={submitRef} type="submit" className="bg-green-500 text-white px-4 py-2 rounded mt-2 cursor-pointer">Change password</button>
+						</form>
+					</div>)}
 				</div>
 			)}
 		</>
@@ -212,7 +314,7 @@ const AccountManagementSection = (props: AccountManagementSectionProps) => {
 };
 
 interface User {
-	id: string;
+	_id: string;
 	username: string;
 	email: string;
 }
@@ -221,13 +323,38 @@ interface UserProfileProps {
 	activeUser: User;
 	viewingUser: User;
 	isActiveUser: boolean;
+	isFollowing: boolean;
+	setIsFollowing: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const UserProfile = (props: UserProfileProps) => {
 	const [active, setActive] = useState("books");
+	const handleFollow = async () => {
+		// follow the user
+		if(!props.isFollowing){
+			fetch("http://localhost:3000/api/follow",{
+				method: "POST",
+				body: JSON.stringify({followedID: props.viewingUser._id}),
+				credentials: "include",
+				headers: {
+					"Content-Type": "application/json"
+				}
+			}).then(res => {
+				if (res.status === 200) {
+					toast.success("User followed successfully");
+					props.setIsFollowing(true);
+				} else {
+					toast.error("Failed to follow user");
+				}
+			}).catch(err => {
+				console.error("Failed to follow user:", err);
+				toast.error("Failed to follow user");
+			})
+		}
+	}
 	return (
 		<div className="flex h-screen mx-auto my-0">
-			<Sidebar active={active} setActive={setActive} />
+			<Sidebar active={active} setActive={setActive} isActiveUser={props.isActiveUser}/>
 			<div className="flex-grow bg-gray-50">
 				<header className="bg-green-100 p-4 flex justify-between items-center">
 					<div className="flex items-center gap-4">
@@ -243,8 +370,8 @@ const UserProfile = (props: UserProfileProps) => {
 					</div>
 					{(!props.isActiveUser) ? (
 					<div className="flex gap-2">
-						<button className="bg-green-500 text-white px-4 py-2 rounded">
-							Add Friend
+						<button onClick={() => handleFollow()} className="bg-green-500 text-white px-4 py-2 rounded">
+							{props.isFollowing ? "Following" : "Follow"}
 						</button>
 						<button className="bg-red-500 text-white px-4 py-2 rounded">
 							Block
@@ -268,7 +395,7 @@ const UserProfilePage = () => {
 	const [activeUser, setActiveUser] = useState<User>({} as User);
 	const [viewingUser, setViewingUser] = useState<User>({} as User);
 	const [isActiveUser, setIsActiveUser] = useState(false);
-
+	const [isFollowing, setIsFollowing] = useState(false);
 	useEffect(() => {
 		fetch("http://localhost:3000/api/auth/verify", {
 			method: "POST",
@@ -290,6 +417,20 @@ const UserProfilePage = () => {
 		}).catch(err => {
 			console.error("Failed to fetch user profile:", err);
 			toast.error("Failed to fetch user profile");
+		});
+		fetch("http://localhost:3000/api/follow/check", {
+			method: "POST",
+			credentials: "include",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({followedID: viewingUserID})
+		}).then(res => res.json()).then(data => {
+			setIsFollowing(data.isFollowing);
+		}
+		).catch(err => {
+			console.error("Failed to check follow status:", err);
+			toast.error("Failed to check follow status");
 		});
 	}, []);
 
@@ -323,7 +464,7 @@ const UserProfilePage = () => {
 					</div>
 				</header>
 				<main className="flex-grow overflow-y-auto">
-					<UserProfile activeUser={activeUser} viewingUser={viewingUser} isActiveUser={isActiveUser} />
+					<UserProfile activeUser={activeUser} viewingUser={viewingUser} isActiveUser={isActiveUser} isFollowing={isFollowing} setIsFollowing={setIsFollowing}/>
 				</main>
 			</div>
 		</div>

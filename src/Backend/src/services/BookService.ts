@@ -1,11 +1,9 @@
 import { Request } from "express";
 import { Book } from "../models/Book";
 import { uploadSupabase } from "../utils/upload.util";
-import fs from "fs";
 import Metadata from "../utils/book.util";
 import { UserBook } from "../models/UserBook";
 import { ObjectId } from "mongoose";
-import { json } from "stream/consumers";
 interface IBookService {
 	getAllBooks: () => Promise<any>;
 	getBookByID: (id: string) => Promise<any>;
