@@ -14,6 +14,7 @@ config();
 
 const verify = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 	const token = req.cookies.accessToken;
+	const refreshToken = req.cookies.refreshToken;
 	if (!token) {
 		console.log("No token");
 		res.status(401).send("Access Denied");
@@ -22,8 +23,8 @@ const verify = async (req: Request, res: Response, next: NextFunction): Promise<
 	try {
 		const verified = jwt.verify(token, process.env.JWT_SECRET as Secret) as JwtPayload;
 		const user = await NormalUser.findById(verified.user.id);
-		if (!user) {
-			console.log("Hello")
+		if (!user) { // normal user not found, or not a normal user
+			console.log("Hello");
 			res.status(404).send("User not found");
 			return;
 		}

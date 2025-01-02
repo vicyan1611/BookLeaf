@@ -3,11 +3,12 @@ import HelloWorld from "./pages/HelloWorld";
 import Books from "./pages/books";
 import Reader from "./pages/reading";
 import LoginPageNormalUser from "./pages/login";
-import LoginPageAdmin from "./pages/admin-login";
+import LoginPageAdmin from "./pages/adminLogin";
 import UserProfile from "./pages/userProfile";
 import Register from "./pages/register";
 import ResetPass from "./pages/forgotPass";
 import Following from "./pages/following";
+import AdminDeleteUser from "./pages/adminDeleteUser";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const router = createBrowserRouter([
@@ -32,7 +33,7 @@ const router = createBrowserRouter([
     element: <LoginPageNormalUser />,
   },
   {
-    path: "/admin-login",
+    path: "/admin",
     element: <LoginPageAdmin />,
   },
   {
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
   {
     path: "/following",
     element: <Following />,
+  },
+  {
+    path: "/admin/delete-user",
+    element: <AdminDeleteUser />,
   },
 ]);
 

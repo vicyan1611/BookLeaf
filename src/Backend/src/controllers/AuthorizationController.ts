@@ -12,6 +12,7 @@ interface AuthorizationController {
 	resetPassword: (req: Request, res: Response) => Promise<void>;
 	logout: (req: Request, res: Response) => Promise<void>;
 	changePassword: (req: Request, res: Response) => Promise<void>;
+	adminVerify: (req: Request, res: Response) => Promise<void>;
 }
 
 const AuthorizationController: AuthorizationController = {
