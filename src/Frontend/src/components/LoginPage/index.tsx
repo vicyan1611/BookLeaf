@@ -72,10 +72,15 @@ const LoginPage: FC<LoginPageProps> = ({
                     name='password' type='password' placeholder='Password' required
                 />
                 <AccountPageInput type='submit' value='Log in'/>
-                <div className='container grid grid-cols-3'>
-                    <a className='col-start-1' href="/reset-password">Forgot Password?</a>
-                    <a className='col-start-3' href="/register">Need an account? Register now!</a>
-                </div>
+                {
+                    usertype === 'normal'?
+                    (
+                        <div className='container grid grid-cols-3'>
+                            <a className='col-start-1' href="/reset-password">Forgot Password?</a>
+                            <a className='col-start-3' href="/register">Need an account? Register now!</a>
+                        </div>
+                    ) : (<></>)
+                }
             </form>
         </div>
     );
