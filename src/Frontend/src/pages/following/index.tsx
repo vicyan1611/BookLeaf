@@ -79,11 +79,7 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
   return (
     <a href={`/user-profile/${user._id}`}>
       <div className="bg-white p-4 rounded-lg shadow hover:shadow-md transition-shadow flex items-center cursor-pointer">
-        <div className="h-12 w-12 rounded-full bg-gray-300 flex items-center justify-center mr-4">
-          <span className="text-gray-600 text-lg font-semibold">
-            {user.username}
-          </span>
-        </div>
+        <div className="h-12 w-12 rounded-full bg-gray-300 flex items-center justify-center mr-4"></div>
         <div>
           <h3 className="text-lg font-medium text-gray-900">{user.username}</h3>
           <p className="text-gray-600">{user.email}</p>
