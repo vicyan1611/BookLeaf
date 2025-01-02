@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { getAllBooks, getBookByID, uploadBook, getBookByUserID} from "../controllers/BookController";
+import {
+  getBookByID,
+  uploadBook,
+  getBookByUserID,
+  getAllBooks,
+} from "../controllers/BookController";
 import upload from "../utils/upload.util";
 const bookRouter = Router();
 

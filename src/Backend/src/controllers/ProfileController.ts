@@ -46,7 +46,7 @@ const ProfileController = {
       const users = await NormalUser.find({
         username: { $regex: searchQuery, $options: "i" },
       })
-        .select("username _id")
+        .select("username _id email")
         .exec();
       res.status(200).json({ users });
     } catch (error) {
