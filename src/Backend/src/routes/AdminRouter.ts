@@ -15,7 +15,7 @@ adminRouter.get('/delete-user', verify, (req, res) => {
 });
 adminRouter.put('/delete-user/:id', verify, AdminController.deleteUser);
 // adminRouter.put('/delete-user/:id', AdminController.deleteUser);
-
+adminRouter.post('/logout', AdminController.logout);
 adminRouter.get('/verify', verify);
 
 export default adminRouter;

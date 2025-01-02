@@ -2,13 +2,6 @@ import { FC } from 'react';
 import MainPageLogo from '../../assets/BookLeaf_Logo_cropped.svg'; //"../../assets/BookLeaf_Logo_cropped.svg";
 import { useNavigate } from 'react-router-dom';
 
-import Cookies from 'js-cookie'; // Or 'universal-cookie'
-
-const removeAllCookies = (): void => {
-  Cookies.remove('adminRefreshToken', { path: '/admin/delete-user', domain: 'http://localhost:5173' });
-  Cookies.remove('adminAccessToken', { path: '/admin/delete-user', domain: 'http://localhost:5173' });
-};
-
 type ActiveButton = 'users' | 'stats' | 'logout';
 
 interface AdminLayoutHeaderProps {
@@ -34,7 +27,12 @@ const AdminLayoutHeader: FC<AdminLayoutHeaderProps> = ({
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    removeAllCookies();
+    fetch("http://localhost:3000/api/admin/logout", {
+      method: "POST",
+      credentials: "include",
+    }).then((res) => {
+      navigate("/admin");
+    })
     // navigate('/admin/delete-user');
   };
   return (
