@@ -5,13 +5,23 @@ import AccountPageInput from '../AccountPageInput'
 import './index.css'
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { FC } from 'react';
 
-function LoginPage(props: any) {
-    const redirectPath = props.redirectPath
+type UserType = 'admin' | 'normal';
+interface LoginPageProps {
+    redirectPath: string;
+    usertype: UserType;
+}
+
+const LoginPage: FC<LoginPageProps> = ({
+    redirectPath,
+    usertype = 'normal'
+}) => {
     const navigate = useNavigate();
-
+    const verifyPath = usertype === 'normal'? 'http://localhost:3000/api/auth/verify' : 'http://localhost:3000/api/admin/verify';
+    const postLoginPath = usertype === 'normal'? 'http://localhost:3000/api/auth/login' : 'http://localhost:3000/api/admin/login';
     useEffect(() => {
-        axios.post('http://localhost:3000/api/auth/verify', {}, {withCredentials: true}).then((res: any) => {
+        axios.post(verifyPath, {}, {withCredentials: true}).then((res: any) => {
             if (res.status === 200) {
                 navigate(redirectPath)
             }
@@ -23,7 +33,7 @@ function LoginPage(props: any) {
         const username = e.target.username.value
         const password = e.target.password.value
         const toaster = toast.loading('Logging in...')
-        fetch('http://localhost:3000/api/auth/login', {
+        fetch(postLoginPath, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json"
