@@ -4,7 +4,7 @@ import BookService from "../services/BookService";
 
 export const getAllBooks = async (req: Request, res: Response) => {
   try {
-    const books = await BookService.getBookByUserID(req); // Delegates to service
+    const books = await BookService.getBookByUserID(req.user!._id as string);
     res.json(books);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch books" });
@@ -12,15 +12,14 @@ export const getAllBooks = async (req: Request, res: Response) => {
 };
 
 export const getBookByID = async (req: Request, res: Response) => {
-  try{
+  try {
     const id = req.params.bookID;
     const book = await BookService.getBookByID(id);
     if (!book) {
       res.status(404).json({ error: "Book not found" });
     }
     res.status(200).json(book);
-  }
-  catch(error){
+  } catch (error) {
     res.status(500).json({ error: "Failed to fetch book" });
   }
 };
@@ -40,11 +39,11 @@ export const uploadBook = async (req: Request, res: Response) => {
     console.error("Error uploading book:", error);
     res.status(500).send("Internal Server Error");
   }
-}
+};
 
 export const getBookByUserID = async (req: Request, res: Response) => {
   try {
-    const userBooks = await BookService.getBookByUserID(req);
+    const userBooks = await BookService.getBookByUserID(req.body.userID);
     res.status(200).json(userBooks);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch user books" });

@@ -14,7 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <LoginPageNormalUser />,
+    element: <Books />,
   },
   {
     path: "/hello",

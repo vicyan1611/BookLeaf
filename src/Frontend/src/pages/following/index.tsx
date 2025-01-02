@@ -1,9 +1,9 @@
-import MainPageLogo from "../../assets/BookLeaf_Logo_cropped.svg";
 import { IoSearchOutline } from "react-icons/io5";
 import { LuUsers2 } from "react-icons/lu";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import NavBar from "../../components/NavBar";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -58,7 +58,7 @@ interface User {
 const fetchUsers = async (query: string = ""): Promise<User[]> => {
   try {
     const response = await axios.get<{ users: User[] }>(
-      `http://localhost:3000/api/user-profile?search=${query}`, // Assuming your API returns { users: [...] }
+      `http://localhost:3000/api/user-profile?search=${query}`,
       {
         withCredentials: true,
       }
@@ -79,11 +79,7 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
   return (
     <a href={`/user-profile/${user._id}`}>
       <div className="bg-white p-4 rounded-lg shadow hover:shadow-md transition-shadow flex items-center cursor-pointer">
-        <div className="h-12 w-12 rounded-full bg-gray-300 flex items-center justify-center mr-4">
-          <span className="text-gray-600 text-lg font-semibold">
-            {user.username}
-          </span>
-        </div>
+        <div className="h-12 w-12 rounded-full bg-gray-300 flex items-center justify-center mr-4"></div>
         <div>
           <h3 className="text-lg font-medium text-gray-900">{user.username}</h3>
           <p className="text-gray-600">{user.email}</p>
@@ -94,6 +90,28 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
 };
 
 const SideBar: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  useEffect(() => {
+    const loadUsers = async () => {
+      try {
+        const response = await axios.get<{ users: User[] }>(
+          `http://localhost:3000/api/follow/getFollowers`,
+          {
+            withCredentials: true,
+          }
+        );
+        if (response.status !== 200) {
+          throw new Error("Failed to fetch users");
+        }
+        console.log("Fetched following users:", response.data.users);
+        setUsers(response.data.users);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        setUsers([]);
+      }
+    };
+    loadUsers();
+  }, []);
   return (
     <div className="w-full border-r border-gray-200 p-4  shadow-md border-2 rounded-lg">
       {/* Recent Following Section */}
@@ -103,18 +121,18 @@ const SideBar: React.FC = () => {
           <span>Following</span>
         </div>
         <div className="ml-7 space-y-2">
-          <div>
-            <div className="text-left">John Doe</div>
-            <div className="text-gray-800 font-extralight text-left text-sm">
-              john.doe@example.com
-            </div>
-          </div>
-          <div>
-            <div className="text-left">Jane Smith</div>
-            <div className="text-gray-800 font-extralight text-left text-sm">
-              jane.smith@example.com
-            </div>
-          </div>
+          {users && users.length > 0 ? (
+            users.map((user) => (
+              <a href={`/user-profile/${user._id}`} key={user._id}>
+                <div className="text-left">{user.username}</div>
+                <div className="text-gray-800 font-extralight text-left text-sm">
+                  {user.email}
+                </div>
+              </a>
+            ))
+          ) : (
+            <div>No users found</div>
+          )}
         </div>
       </div>
     </div>
@@ -166,23 +184,7 @@ const Following: React.FC = () => {
 
   return (
     <div className="w-full p-10 h-full">
-      <div className="flex justify-between mb-6 w-full h-12">
-        <img src={MainPageLogo} alt="" />
-        <div className="flex gap-3">
-          <button className="font-semibold hover:bg-green-500 hover:text-white py-2 px-3 rounded">
-            Books
-          </button>
-          <button className="font-semibold hover:bg-green-500 hover:text-white py-2 px-3 rounded">
-            My Libraries
-          </button>
-          <button className="font-semibold hover:bg-green-500 hover:text-white py-2 px-3 rounded">
-            Goals
-          </button>
-          <button className="font-semibold hover:bg-green-500 hover:text-white py-2 px-3 rounded">
-            Other Users
-          </button>
-        </div>
-      </div>
+      <NavBar />
       <SearchBar onSearch={handleSearch} />
       <div className="grid grid-cols-4 mt-6 gap-4">
         <div className="col-start-1 col-span-1">
@@ -191,7 +193,6 @@ const Following: React.FC = () => {
         <div className="col-span-3">
           {isLoading ? (
             <div className="flex justify-center items-center h-48 col-span-3">
-              {/* You can use a loading spinner here */}
               <p>Loading...</p>
             </div>
           ) : (
