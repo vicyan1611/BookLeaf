@@ -1,5 +1,5 @@
 import { IoSearchOutline } from "react-icons/io5";
-import { LuUsers2 } from "react-icons/lu";
+import { LuUsers } from "react-icons/lu";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -61,7 +61,7 @@ const fetchUsers = async (query: string = ""): Promise<User[]> => {
       `http://localhost:3000/api/user-profile?search=${query}`,
       {
         withCredentials: true,
-      }
+      },
     );
     if (response.status !== 200) {
       throw new Error("Failed to fetch users");
@@ -98,7 +98,7 @@ const SideBar: React.FC = () => {
           `http://localhost:3000/api/follow/getFollowers`,
           {
             withCredentials: true,
-          }
+          },
         );
         if (response.status !== 200) {
           throw new Error("Failed to fetch users");
@@ -117,7 +117,7 @@ const SideBar: React.FC = () => {
       {/* Recent Following Section */}
       <div className="mb-6">
         <div className="flex gap-2 text-gray-700 font-medium mb-3">
-          <LuUsers2 size={20} />
+          <LuUsers size={20} />
           <span>Following</span>
         </div>
         <div className="ml-7 space-y-2">
