@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: "20" # Specify your Node.js version (adjust if needed)
           cache: "npm" # Cache npm dependencies
-          cache-dependency-path: frontend/package-lock.json
+          cache-dependency-path: src/Frontend/package-lock.json
 
       - name: Install Frontend Dependencies
         run: npm ci
